@@ -29,6 +29,29 @@ Use this checklist to prepare a client version. Business content and the active 
 
 Keep the existing object structure and required fields in each profile. Run the tests after editing to catch missing content or configuration errors.
 
+## Client Information Checklist
+
+Collect and confirm these details with the client before preparing their website:
+
+- [ ] Business name (currently GreenLeaf Salon).
+- [ ] Logo or brand assets. The current template uses a text-based wordmark; displaying a supplied graphic logo requires a separate implementation update.
+- [ ] Public phone number, including country code; update both `phone` and `phoneLink`.
+- [ ] WhatsApp number in international digits-only format, plus the preferred pre-filled message in `WHATSAPP_CONFIG`.
+- [ ] Public email address.
+- [ ] Business address and location (`address`).
+- [ ] Google Maps URL, if it should be linked on the site. The current profile has no Maps-link field.
+- [ ] Business hours, if they should be displayed. The current profile has no hours field.
+- [ ] Services and accurate descriptions in the selected profile's `services.items`.
+- [ ] Service prices, only if the client wants them shown; confirm the values and update `WEBSITE_PACKAGES` or agree on where service-specific prices belong.
+- [ ] Hero image and accurate alternative text (`hero.imageUrl` and `hero.imageAlt`).
+- [ ] About/business images and accurate alternative text (`about.imageUrl` and `about.imageAlt`).
+- [ ] Social media profile URLs, if they should be linked on the site. Social links are not currently configured in the profile.
+- [ ] Approved About/business description (`about.intro` and `about.description`).
+- [ ] SEO page title (`pageTitle`).
+- [ ] SEO meta description (`pageDescription`).
+
+**Before publishing for a real client, replace all demo contact details and both GreenLeaf placeholder images with client-approved information and photos.** The sample phone/email and local image placeholders are for demonstration only; verify the contact links and image descriptions after replacement.
+
 ## Run locally and validate
 
 From the project directory:
