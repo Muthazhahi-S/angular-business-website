@@ -45,7 +45,14 @@ describe('App', () => {
     expect(compiled.querySelector('.package-card[aria-labelledby="package-business"]')?.textContent).toContain('WhatsApp / contact CTA');
     expect(compiled.querySelector('.package-card[aria-labelledby="package-custom"]')?.textContent).toContain('API integration when required');
     expect(compiled.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.brand__name')?.textContent).toContain('GreenLeaf Salon');
+    const brandLinks = compiled.querySelectorAll('.brand');
+    expect(brandLinks).toHaveLength(2);
+    for (const brandLink of brandLinks) {
+      expect(brandLink.getAttribute('aria-label')).toBe('GreenLeaf Salon home');
+      expect(brandLink.querySelector('.brand__primary')?.textContent).toBe('GreenLeaf');
+      expect(brandLink.querySelector('.brand__descriptor')?.textContent).toBe('Salon');
+      expect(brandLink.querySelector('.brand__mark')).toBeNull();
+    }
     expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Enquire about a visit');
     expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Enquire about a visit');
     expect(compiled.querySelector('.hero__description')?.textContent).toContain('discuss your preferences');
@@ -81,7 +88,8 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(profile.name).not.toBe(BUSINESS_PROFILES[ACTIVE_BUSINESS_TYPE].name);
-    expect(compiled.querySelector('.brand__name')?.textContent).toContain(profile.name);
+    expect(compiled.querySelector('.brand__primary')?.textContent).toBe(profile.brandWordmark.primary);
+    expect(compiled.querySelector('.brand__descriptor')?.textContent).toBe(profile.brandWordmark.accent);
     expect(compiled.querySelector('.footer__brand p')?.textContent).toContain(profile.tagline);
     expect(compiled.querySelector('h1')?.textContent).toContain(profile.hero.headingLead);
     expect(compiled.querySelector('.hero__description')?.textContent).toContain(profile.hero.subheading);

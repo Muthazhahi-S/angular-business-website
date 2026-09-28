@@ -1,4 +1,6 @@
 <a class="brand" href="#home" [attr.aria-label]="business.name + ' home'">
-  <span class="brand__mark" aria-hidden="true">{{ business.brandMark }}</span>
-  <span class="brand__name">{{ business.brandWordmark.primary }} <span>{{ business.brandWordmark.accent }}</span></span>
+  <span class="brand__name">
+    <span class="brand__primary">{{ business.brandWordmark.primary }}</span>
+    <span class="brand__descriptor">{{ business.brandWordmark.accent }}</span>
+  </span>
 </a>
