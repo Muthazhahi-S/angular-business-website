@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
@@ -8,7 +8,7 @@ import { BUSINESS_PROFILE } from '../../site-profile';
   styleUrl: './contact.scss',
 })
 export class Contact {
-  protected readonly business = BUSINESS_PROFILE;
+  protected readonly business = inject(BUSINESS_PROFILE);
   protected readonly submissionStatus = signal('');
 
   protected submitContact(event: Event, form: HTMLFormElement): void {

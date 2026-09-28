@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
@@ -8,5 +8,5 @@ import { BUSINESS_PROFILE } from '../../site-profile';
   styleUrl: './brand.scss',
 })
 export class Brand {
-  protected readonly business = BUSINESS_PROFILE;
+  protected readonly business = inject(BUSINESS_PROFILE);
 }

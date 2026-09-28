@@ -1,3 +1,5 @@
+import { inject, InjectionToken } from '@angular/core';
+
 export const BUSINESS_TYPES = [
   'salonBeauty',
   'restaurantCafe',
@@ -90,7 +92,7 @@ type ContentPoint = {
   description: string;
 };
 
-type BusinessProfile = {
+export type BusinessProfile = {
   name: string;
   brandMark: string;
   brandWordmark: { primary: string; accent: string };
@@ -812,4 +814,11 @@ export const BUSINESS_PROFILES: Record<BusinessType, BusinessProfile> = {
 };
 
 export const ACTIVE_BUSINESS_TYPE: BusinessType = 'salonBeauty';
-export const BUSINESS_PROFILE = BUSINESS_PROFILES[ACTIVE_BUSINESS_TYPE];
+export const ACTIVE_BUSINESS_TYPE_TOKEN = new InjectionToken<BusinessType>('ACTIVE_BUSINESS_TYPE', {
+  providedIn: 'root',
+  factory: () => ACTIVE_BUSINESS_TYPE,
+});
+export const BUSINESS_PROFILE = new InjectionToken<BusinessProfile>('BUSINESS_PROFILE', {
+  providedIn: 'root',
+  factory: () => BUSINESS_PROFILES[inject(ACTIVE_BUSINESS_TYPE_TOKEN)],
+});

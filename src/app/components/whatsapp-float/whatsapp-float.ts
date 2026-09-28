@@ -1,4 +1,4 @@
-import { afterNextRender, Component, OnDestroy, signal } from '@angular/core';
+import { afterNextRender, Component, inject, OnDestroy, signal } from '@angular/core';
 import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
@@ -8,7 +8,7 @@ import { BUSINESS_PROFILE } from '../../site-profile';
   styleUrl: './whatsapp-float.scss',
 })
 export class WhatsappFloat implements OnDestroy {
-  protected readonly business = BUSINESS_PROFILE;
+  protected readonly business = inject(BUSINESS_PROFILE);
   protected readonly contactVisible = signal(false);
   private observer?: IntersectionObserver;
 

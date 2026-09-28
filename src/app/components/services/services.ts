@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
@@ -8,8 +8,8 @@ import { BUSINESS_PROFILE } from '../../site-profile';
   styleUrl: './services.scss',
 })
 export class Services {
-  protected readonly business = BUSINESS_PROFILE;
-  protected readonly services = BUSINESS_PROFILE.services.items.map((service, index) => ({
+  protected readonly business = inject(BUSINESS_PROFILE);
+  protected readonly services = this.business.services.items.map((service, index) => ({
     ...service,
     number: String(index + 1).padStart(2, '0'),
   }));

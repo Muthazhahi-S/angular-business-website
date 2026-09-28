@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Brand } from '../brand/brand';
 import { BUSINESS_PROFILE } from '../../site-profile';
 
@@ -10,5 +10,5 @@ import { BUSINESS_PROFILE } from '../../site-profile';
 })
 export class Footer {
   protected readonly year = new Date().getFullYear();
-  protected readonly business = BUSINESS_PROFILE;
+  protected readonly business = inject(BUSINESS_PROFILE);
 }

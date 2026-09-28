@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
@@ -8,8 +8,8 @@ import { BUSINESS_PROFILE } from '../../site-profile';
   styleUrl: './why-us.scss',
 })
 export class WhyUs {
-  protected readonly business = BUSINESS_PROFILE;
-  protected readonly principles = BUSINESS_PROFILE.why.principles.map((principle, index) => ({
+  protected readonly business = inject(BUSINESS_PROFILE);
+  protected readonly principles = this.business.why.principles.map((principle, index) => ({
     ...principle,
     number: String(index + 1).padStart(2, '0'),
   }));

@@ -1,59 +1,76 @@
-# BusinessWebsite
+# Reusable Business Website Template
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.24.
+Use this checklist to prepare a client version. Business content and the active template are managed in `src/app/site-profile.ts`.
 
-## Development server
+## Create a client version
 
-To start a local development server, run:
+- [ ] **Choose the business type.** Set `ACTIVE_BUSINESS_TYPE` near the bottom of `src/app/site-profile.ts` to one of:
+  - `salonBeauty` — Salon / Beauty
+  - `restaurantCafe` — Restaurant / Cafe
+  - `clinicHealthcare` — Clinic / Healthcare
+  - `localRetail` — Local Shop / Retail
+  - `professionalServices` — Professional Services
+  - `portfolioPersonalBrand` — Portfolio / Personal Brand
+- [ ] **Edit that type's entry** in `BUSINESS_PROFILES` in the same file. Update the fields there:
+  - Business name, brand mark/wordmark, tagline, email, phone, and location (`address`).
+  - Phone display and dial value together: `phone` and `phoneLink`.
+  - Hero copy and image details in `hero`.
+  - Service section copy and service items in `services`.
+  - About content and values in `about`.
+  - Reasons to choose the business in `why`.
+  - Three project/customer steps in `process`.
+  - Contact headings, form labels, prompts, and button copy in `contact`.
+  - Browser/page title and search description in `pageTitle` and `pageDescription`.
+- [ ] **Set WhatsApp details.** Edit `WHATSAPP_CONFIG` near the top of `site-profile.ts`. The settings are shared by all six profiles. Use the international number with digits only (no `+`, spaces, or punctuation), then set the pre-filled `whatsappMessage`. Set `enableWhatsapp` to `true` to show the contact and floating CTAs, or `false` to hide them.
+- [ ] **Review website packages.** Edit `WEBSITE_PACKAGES` in `site-profile.ts`; it is intentionally shared by all profiles. Set each `price` to a display string when ready, or keep it `null` to show no price.
+- [ ] **Replace demo images.** In the selected profile's `hero.imageUrl` and `about.imageUrl`, replace the current URLs with client-approved image URLs. For local assets, place files under `public/` and use paths such as `/images/client-hero.jpg`. Update the matching `imageAlt` text to describe each image.
+- [ ] **Check demo settings and details.** Replace sample contact values before publishing. `DEMO_SETTINGS.showReminders` controls whether internal reminders are shown; it is `false` by default. The WhatsApp demo number is in `WHATSAPP_CONFIG`.
+- [ ] **Review the result** at desktop and mobile widths, including every link, the contact form, and WhatsApp.
 
-```bash
-ng serve
-```
+Keep the existing object structure and required fields in each profile. Run the tests after editing to catch missing content or configuration errors.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Run locally and validate
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+From the project directory:
 
 ```bash
-ng test
+npm install
+npm start
 ```
 
-## Running end-to-end tests
+Open `http://localhost:4200/`. Stop the local server with `Ctrl+C`.
 
-For end-to-end (e2e) testing, run:
+Run all tests:
 
 ```bash
-ng e2e
+npm run test -- --watch=false
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Create a production build:
 
-## Additional Resources
+```bash
+npm run build
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The production output is written to `dist/`.
+
+## Optional: keep each client on a separate Git branch
+
+Start from the project repository, with the desired base branch checked out and up to date:
+
+```bash
+git switch -c client/client-name
+```
+
+After making and validating the client changes, stage and commit them:
+
+```bash
+git add .
+git commit -m "Prepare client-name website"
+```
+
+To publish the branch to the configured remote:
+
+```bash
+git push -u origin client/client-name
+```

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { About } from './components/about/about';
 import { Contact } from './components/contact/contact';
@@ -19,11 +19,13 @@ import { BUSINESS_PROFILE } from './site-profile';
   styleUrl: './app.scss',
 })
 export class App {
+  private readonly business = inject(BUSINESS_PROFILE);
+
   constructor(title: Title, meta: Meta) {
-    title.setTitle(BUSINESS_PROFILE.pageTitle);
+    title.setTitle(this.business.pageTitle);
     meta.updateTag({
       name: 'description',
-      content: BUSINESS_PROFILE.pageDescription,
+      content: this.business.pageDescription,
     });
   }
 }

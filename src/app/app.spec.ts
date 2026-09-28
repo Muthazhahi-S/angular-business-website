@@ -2,8 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import {
   BUSINESS_PROFILES,
+  BUSINESS_PROFILE,
   BUSINESS_TYPE_LABELS,
   BUSINESS_TYPES,
+  ACTIVE_BUSINESS_TYPE,
+  ACTIVE_BUSINESS_TYPE_TOKEN,
   DEMO_SETTINGS,
   WEBSITE_PACKAGES,
   WHATSAPP_CONFIG,
@@ -61,6 +64,32 @@ describe('App', () => {
     expect(compiled.querySelectorAll('.contact__form option')).toHaveLength(8);
   });
 
+  it('renders a different selected profile throughout the site', async () => {
+    const profile = BUSINESS_PROFILES.restaurantCafe;
+    TestBed.overrideProvider(ACTIVE_BUSINESS_TYPE_TOKEN, { useValue: 'restaurantCafe' });
+
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(profile.name).not.toBe(BUSINESS_PROFILES[ACTIVE_BUSINESS_TYPE].name);
+    expect(compiled.querySelector('.brand__name')?.textContent).toContain(profile.name);
+    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain(profile.tagline);
+    expect(compiled.querySelector('h1')?.textContent).toContain(profile.hero.headingLead);
+    expect(compiled.querySelector('.hero__description')?.textContent).toContain(profile.hero.subheading);
+    expect(compiled.querySelector('.service-card h3')?.textContent).toBe(profile.services.items[0].name);
+    expect(compiled.querySelector('#about-title')?.textContent).toContain(profile.about.headingLead);
+    expect(compiled.querySelector('#why-title')?.textContent).toContain(profile.why.headingLead);
+    expect(compiled.querySelector('#process-title')?.textContent).toContain(profile.process.headingLead);
+    expect(compiled.querySelector('.nav__contact')?.textContent).toContain(profile.navigation.contactCta);
+    expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe(profile.contact.formLabel);
+    expect(compiled.querySelector('#contact-title')?.textContent).toContain(profile.contact.headingLead);
+    expect(document.title).toBe(profile.pageTitle);
+    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toBe(profile.pageDescription);
+    expect(compiled.querySelectorAll('.package-card')).toHaveLength(WEBSITE_PACKAGES.length);
+    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('href')).toBe(profile.whatsappUrl);
+  });
+
   it('provides complete customizable profiles for all six business types', () => {
     expect(BUSINESS_TYPES).toHaveLength(6);
 
@@ -72,12 +101,44 @@ describe('App', () => {
       expect(profile.email).toContain('@');
       expect(profile.phone).toBeTruthy();
       expect(profile.address).toBeTruthy();
+      expect(profile.pageTitle).toBeTruthy();
+      expect(profile.pageDescription).toBeTruthy();
+      expect(profile.navigation.contactCta).toBeTruthy();
+      expect(profile.hero).toEqual(expect.objectContaining({
+        eyebrow: expect.any(String),
+        headingLead: expect.any(String),
+        headingSecondLine: expect.any(String),
+        headingEmphasis: expect.any(String),
+        subheading: expect.any(String),
+        contactCta: expect.any(String),
+        imageUrl: expect.any(String),
+        imageAlt: expect.any(String),
+      }));
       expect(profile.hero.headingLead).toBeTruthy();
       expect(profile.services.items).toHaveLength(6);
+      expect(profile.services.eyebrow).toBeTruthy();
+      expect(profile.services.headingLead).toBeTruthy();
+      expect(profile.services.intro).toBeTruthy();
+      expect(profile.services.items.every((service) => service.name && service.description && service.symbol)).toBe(true);
       expect(profile.about.values.length).toBeGreaterThan(0);
+      expect(profile.about.headingLead).toBeTruthy();
+      expect(profile.about.intro).toBeTruthy();
+      expect(profile.about.description).toBeTruthy();
+      expect(profile.about.imageUrl).toBeTruthy();
+      expect(profile.about.imageAlt).toBeTruthy();
       expect(profile.why.principles.length).toBeGreaterThan(0);
+      expect(profile.why.headingLead).toBeTruthy();
+      expect(profile.why.intro).toBeTruthy();
+      expect(profile.why.principles.every((principle) => principle.title && principle.description)).toBe(true);
       expect(profile.process.steps).toHaveLength(3);
+      expect(profile.process.headingLead).toBeTruthy();
+      expect(profile.process.intro).toBeTruthy();
+      expect(profile.process.steps.every((step) => step.title && step.description)).toBe(true);
       expect(profile.contact.formLabel).toContain(profile.name);
+      expect(profile.contact.headingLead).toBeTruthy();
+      expect(profile.contact.formCta).toBeTruthy();
+      expect(profile.contact.servicePrompt).toBeTruthy();
+      expect(profile.contact.projectPrompt).toBeTruthy();
       expect(profile.packages).toBe(WEBSITE_PACKAGES);
       expect(profile.whatsappNumber).toBe(WHATSAPP_CONFIG.whatsappNumber);
       expect(profile.whatsappMessage).toBe(WHATSAPP_CONFIG.whatsappMessage);
