@@ -25,41 +25,86 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('renders the active salon profile across the site sections', async () => {
+  it('renders the active GreenMart retail profile across the site sections', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hair & beauty care');
+    const profile = BUSINESS_PROFILES.localRetail;
+    expect(ACTIVE_BUSINESS_TYPE).toBe('localRetail');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Everyday shopping');
+    expect(compiled.querySelector('.hero__description')?.textContent).toContain('groceries, household essentials, and daily needs');
+    const heroImage = compiled.querySelector('.hero__visual img');
+    const aboutImage = compiled.querySelector('.about__visual img');
+    expect(heroImage?.getAttribute('src')).toBe('/assets/images/greenmart-hero-placeholder.svg');
+    expect(heroImage?.getAttribute('alt')).toContain('Illustrated neighborhood supermarket');
+    expect(heroImage?.getAttribute('loading')).toBe('eager');
+    expect(heroImage?.getAttribute('fetchpriority')).toBe('high');
+    expect(aboutImage?.getAttribute('src')).toBe('/assets/images/greenmart-about-placeholder.svg');
+    expect(aboutImage?.getAttribute('alt')).toContain('Illustrated supermarket shelves');
+    expect(aboutImage?.getAttribute('loading')).toBe('lazy');
     expect(compiled.querySelectorAll('.service-card h3')).toHaveLength(6);
+    expect(Array.from(compiled.querySelectorAll('.service-card h3'), (heading) => heading.textContent?.trim())).toEqual([
+      'Fresh Groceries',
+      'Fruits & Vegetables',
+      'Snacks & Beverages',
+      'Household Essentials',
+      'Personal Care',
+      'Daily Needs',
+    ]);
     expect(compiled.querySelectorAll('.package-card')).toHaveLength(3);
     expect(compiled.querySelectorAll('.package-card__cta[href="#contact"]')).toHaveLength(3);
     expect(compiled.querySelector('.package-card[aria-labelledby="package-starter"]')?.textContent).toContain('1–3 pages');
     expect(compiled.querySelector('.package-card[aria-labelledby="package-business"]')?.textContent).toContain('WhatsApp / contact CTA');
     expect(compiled.querySelector('.package-card[aria-labelledby="package-custom"]')?.textContent).toContain('API integration when required');
-    expect(compiled.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.brand__name')?.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Enquire about an appointment');
-    expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Enquire about an appointment');
-    expect(compiled.querySelector('.hero__description')?.textContent).toContain('ask about appointments');
-    expect(compiled.querySelector('.contact__details a[href="mailto:greenleaf@example.com"]')?.textContent).toContain('greenleaf@example.com');
+    expect(compiled.textContent).toContain('GreenMart Supermarket');
+    const brands = Array.from(compiled.querySelectorAll('.brand'));
+    expect(brands).toHaveLength(2);
+    for (const brand of brands) {
+      expect(brand.querySelector('.brand__primary')?.textContent?.trim()).toBe('GreenMart');
+      expect(brand.querySelector('.brand__descriptor')?.textContent?.trim()).toBe('Supermarket');
+      expect(brand.getAttribute('aria-label')).toBe('GreenMart Supermarket home');
+    }
+    expect(compiled.querySelector('.site-header .brand')).not.toBeNull();
+    expect(compiled.querySelector('.footer__brand .brand')).not.toBeNull();
+    expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Contact GreenMart');
+    expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Contact GreenMart');
+    expect(compiled.querySelector('.contact__details a[href="mailto:greenmart@example.com"]')?.textContent).toContain('greenmart@example.com');
     expect(compiled.querySelector('.contact__details a[href="tel:+919876543210"]')?.textContent).toContain('+91 98765 43210');
+    expect(profile.businessHours).toBe('Monday–Sunday: 7:00 AM – 10:00 PM');
+    expect(compiled.querySelector('.contact__details')?.textContent).toContain(profile.businessHours);
+    const mapsLink = compiled.querySelector('.contact__details a[href="https://maps.example.invalid/?q=GreenMart+Supermarket+Salem"]');
+    expect(mapsLink?.textContent).toContain('View on Google Maps');
+    expect(mapsLink?.getAttribute('target')).toBe('_blank');
+    expect(mapsLink?.getAttribute('rel')).toContain('noopener');
+    const instagramLink = compiled.querySelector('.contact__social a[href="https://instagram.example.invalid/greenmart-demo"]');
+    expect(instagramLink?.textContent).toContain('Instagram');
+    expect(instagramLink?.getAttribute('target')).toBe('_blank');
+    expect(instagramLink?.getAttribute('rel')).toContain('noopener');
+    const facebookLink = compiled.querySelector('.contact__social a[href="https://facebook.example.invalid/greenmart-demo"]');
+    expect(facebookLink?.textContent).toContain('Facebook');
+    expect(facebookLink?.getAttribute('target')).toBe('_blank');
+    expect(facebookLink?.getAttribute('rel')).toContain('noopener');
     const expectedWhatsAppUrl = `https://wa.me/${WHATSAPP_CONFIG.whatsappNumber}?text=${encodeURIComponent(WHATSAPP_CONFIG.whatsappMessage)}`;
     expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('href')).toBe(expectedWhatsAppUrl);
-    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('aria-label')).toBe('Chat with GreenLeaf Salon on WhatsApp');
+    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('aria-label')).toBe('Chat with GreenMart Supermarket on WhatsApp');
     expect(compiled.querySelector('.contact__whatsapp')?.textContent).not.toContain('Demo WhatsApp number');
     expect(compiled.querySelector('.contact__availability')).toBeNull();
     expect(compiled.querySelector('.footer__bottom')?.textContent).not.toContain('sample contact details');
     expect(compiled.textContent).not.toContain('Browse a sample');
     expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('href')).toBe(expectedWhatsAppUrl);
-    expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('aria-label')).toBe('Chat with GreenLeaf Salon on WhatsApp');
+    expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('aria-label')).toBe('Chat with GreenMart Supermarket on WhatsApp');
     expect(compiled.querySelector('.contact__address')?.textContent).toContain('Salem, Tamil Nadu');
-    expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe('Contact GreenLeaf Salon');
-    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain('Professional Hair & Beauty Care');
-    expect(compiled.querySelector('.footer__bottom')?.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.footer__links a[href="mailto:greenleaf@example.com"]')).not.toBeNull();
+    expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe('Contact GreenMart Supermarket');
+    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain('Fresh groceries. Everyday essentials. Easy shopping.');
+    expect(compiled.querySelector('.footer__bottom')?.textContent).toContain('GreenMart Supermarket');
+    expect(compiled.querySelector('.footer__links a[href="mailto:greenmart@example.com"]')).not.toBeNull();
     expect(compiled.querySelector('.footer__links a[href="tel:+919876543210"]')?.textContent).toContain('+91 98765 43210');
+    expect(compiled.querySelector('.footer__links')?.textContent).toContain(profile.businessHours);
+    expect(compiled.querySelector('.footer__links a[href="https://maps.example.invalid/?q=GreenMart+Supermarket+Salem"]')?.getAttribute('target')).toBe('_blank');
+    expect(compiled.querySelector('.footer__links a[href="https://instagram.example.invalid/greenmart-demo"]')?.getAttribute('target')).toBe('_blank');
+    expect(compiled.querySelector('.footer__links a[href="https://facebook.example.invalid/greenmart-demo"]')?.getAttribute('target')).toBe('_blank');
     expect(compiled.querySelector('.footer__links')?.textContent).toContain('Salem, Tamil Nadu');
-    expect(document.title).toContain('GreenLeaf Salon');
+    expect(document.title).toBe(profile.pageTitle);
     expect(compiled.querySelectorAll('.outcome-card')).toHaveLength(3);
     expect(compiled.querySelectorAll('.contact__form option')).toHaveLength(8);
   });
@@ -73,7 +118,8 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(profile.name).not.toBe(BUSINESS_PROFILES[ACTIVE_BUSINESS_TYPE].name);
-    expect(compiled.querySelector('.brand__name')?.textContent).toContain(profile.name);
+    expect(compiled.querySelector('.brand__primary')?.textContent?.trim()).toBe(profile.brandWordmark.primary);
+    expect(compiled.querySelector('.brand__descriptor')?.textContent?.trim()).toBe(profile.brandWordmark.accent);
     expect(compiled.querySelector('.footer__brand p')?.textContent).toContain(profile.tagline);
     expect(compiled.querySelector('h1')?.textContent).toContain(profile.hero.headingLead);
     expect(compiled.querySelector('.hero__description')?.textContent).toContain(profile.hero.subheading);
@@ -101,6 +147,10 @@ describe('App', () => {
       expect(profile.email).toContain('@');
       expect(profile.phone).toBeTruthy();
       expect(profile.address).toBeTruthy();
+      expect(typeof profile.businessHours).toBe('string');
+      expect(typeof profile.googleMapsUrl).toBe('string');
+      expect(typeof profile.instagramUrl).toBe('string');
+      expect(typeof profile.facebookUrl).toBe('string');
       expect(profile.pageTitle).toBeTruthy();
       expect(profile.pageDescription).toBeTruthy();
       expect(profile.navigation.contactCta).toBeTruthy();
@@ -150,6 +200,10 @@ describe('App', () => {
     }
 
     expect(WEBSITE_PACKAGES).toHaveLength(3);
-    expect(WEBSITE_PACKAGES.every((websitePackage) => websitePackage.price === null)).toBe(true);
+    expect(WEBSITE_PACKAGES.map((websitePackage) => websitePackage.price)).toEqual([
+      '₹5,000 onwards',
+      '₹10,000 onwards',
+      '₹20,000+',
+    ]);
   });
 });

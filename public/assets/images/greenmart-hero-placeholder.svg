@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100">
+  <defs>
+    <linearGradient id="store" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#edf4e9"/>
+      <stop offset="1" stop-color="#d7e6d6"/>
+    </linearGradient>
+    <linearGradient id="window" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7e9e3"/>
+      <stop offset="1" stop-color="#f8f4e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1100" fill="url(#store)"/>
+  <rect y="825" width="900" height="275" fill="#d6c9b1"/>
+  <rect x="68" y="72" width="764" height="98" rx="18" fill="#264c3a"/>
+  <text x="450" y="136" fill="#fffdf6" font-family="Arial, sans-serif" font-size="39" font-weight="700" letter-spacing="4" text-anchor="middle">GREENMART</text>
+  <rect x="85" y="205" width="730" height="570" rx="22" fill="#fffdf7" opacity=".88"/>
+  <rect x="115" y="232" width="670" height="500" rx="12" fill="url(#window)"/>
+  <path d="M450 232v500M115 480h670" fill="none" stroke="#fffdf7" stroke-width="14"/>
+  <path d="M150 342h265v115H150zM485 342h265v115H485z" fill="#f7f3e9"/>
+  <path d="M150 508h265v108H150zM485 508h265v108H485z" fill="#f7f3e9"/>
+  <path d="M150 634h600" stroke="#b3a58d" stroke-width="13"/>
+  <g>
+    <rect x="175" y="366" width="45" height="72" rx="10" fill="#d79b59"/>
+    <rect x="233" y="382" width="54" height="56" rx="8" fill="#879e55"/>
+    <rect x="302" y="358" width="66" height="80" rx="12" fill="#c96e4a"/>
+    <rect x="510" y="374" width="58" height="64" rx="10" fill="#d5a54f"/>
+    <rect x="584" y="354" width="48" height="84" rx="9" fill="#778f59"/>
+    <rect x="650" y="380" width="75" height="58" rx="8" fill="#c87451"/>
+    <rect x="174" y="538" width="58" height="61" rx="10" fill="#b16d42"/>
+    <rect x="247" y="526" width="50" height="73" rx="9" fill="#819751"/>
+    <rect x="313" y="545" width="78" height="54" rx="9" fill="#d5a54f"/>
+    <rect x="509" y="541" width="72" height="58" rx="8" fill="#8a9e58"/>
+    <rect x="596" y="526" width="49" height="73" rx="9" fill="#c87451"/>
+    <rect x="660" y="545" width="64" height="54" rx="8" fill="#d5a54f"/>
+  </g>
+  <path d="M180 732h540" stroke="#64795c" stroke-width="11" stroke-linecap="round"/>
+  <path d="M305 731c15-44 45-65 88-65s74 21 89 65" fill="none" stroke="#627a55" stroke-width="12" stroke-linecap="round"/>
+  <path d="M342 687c-18-28-14-50 11-66 21 22 17 45-11 66Zm65-2c3-34 22-51 55-48-2 32-21 49-55 48Z" fill="#88a66b"/>
+  <path d="M368 739h84l-8 89h-68z" fill="#c48b52"/>
+  <path d="M378 750h64m-61 19h58m-55 19h52" stroke="#f3dfb8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M232 880h436" stroke="#b59f80" stroke-width="5" opacity=".55"/>
+  <circle cx="120" cy="906" r="7" fill="#fffdf7" opacity=".7"/>
+  <circle cx="766" cy="866" r="5" fill="#fffdf7" opacity=".7"/>
+</svg>

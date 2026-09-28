@@ -7,7 +7,24 @@
       </div>
       <nav class="footer__links" aria-label="Footer navigation">
         <div><strong>Explore</strong><a href="#services">Services</a><a href="#about">About</a><a href="#process">Our process</a></div>
-        <div><strong>Contact</strong><a [href]="'mailto:' + business.email">{{ business.email }}</a><a [href]="'tel:' + business.phoneLink">{{ business.phone }}</a><span>{{ business.address }}</span></div>
+        <div>
+          <strong>Contact</strong>
+          <a [href]="'mailto:' + business.email">{{ business.email }}</a>
+          <a [href]="'tel:' + business.phoneLink">{{ business.phone }}</a>
+          <span>{{ business.address }}</span>
+          @if (business.businessHours) {
+            <span><strong>Hours</strong> {{ business.businessHours }}</span>
+          }
+          @if (business.googleMapsUrl) {
+            <a [href]="business.googleMapsUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Directions to ' + business.name + ' on Google Maps (opens in a new tab)'">Google Maps <span aria-hidden="true">↗</span></a>
+          }
+          @if (business.instagramUrl) {
+            <a [href]="business.instagramUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="business.name + ' on Instagram (opens in a new tab)'">Instagram <span aria-hidden="true">↗</span></a>
+          }
+          @if (business.facebookUrl) {
+            <a [href]="business.facebookUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="business.name + ' on Facebook (opens in a new tab)'">Facebook <span aria-hidden="true">↗</span></a>
+          }
+        </div>
       </nav>
       <a class="footer__top" href="#home">Back to top <span aria-hidden="true">↑</span></a>
     </div>

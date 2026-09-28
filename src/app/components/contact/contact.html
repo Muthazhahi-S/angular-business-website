@@ -19,7 +19,29 @@
           <span class="contact__detail-icon" aria-hidden="true">⌖</span>
           <span><small>Location</small><strong>{{ business.address }}</strong></span>
         </div>
+        @if (business.businessHours) {
+          <div class="contact__address">
+            <span class="contact__detail-icon" aria-hidden="true">◷</span>
+            <span><small>Business hours</small><strong>{{ business.businessHours }}</strong></span>
+          </div>
+        }
+        @if (business.googleMapsUrl) {
+          <a [href]="business.googleMapsUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'View ' + business.name + ' on Google Maps (opens in a new tab)'">
+            <span class="contact__detail-icon" aria-hidden="true">↗</span>
+            <span><small>Directions</small><strong>View on Google Maps</strong></span>
+          </a>
+        }
       </div>
+      @if (business.instagramUrl || business.facebookUrl) {
+        <nav class="contact__social" [attr.aria-label]="business.name + ' social media links'">
+          @if (business.instagramUrl) {
+            <a [href]="business.instagramUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="business.name + ' on Instagram (opens in a new tab)'">Instagram <span aria-hidden="true">↗</span></a>
+          }
+          @if (business.facebookUrl) {
+            <a [href]="business.facebookUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="business.name + ' on Facebook (opens in a new tab)'">Facebook <span aria-hidden="true">↗</span></a>
+          }
+        </nav>
+      }
       @if (business.enableWhatsapp) {
         <div class="contact__whatsapp">
           <a
