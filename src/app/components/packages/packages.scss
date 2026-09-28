@@ -1,7 +1,7 @@
 .packages {
   padding: var(--section-space) 0;
   background:
-    radial-gradient(ellipse at 90% 0%, rgba(101, 88, 232, 0.07), transparent 34rem),
+    radial-gradient(ellipse at 90% 0%, rgba(128, 102, 77, 0.08), transparent 34rem),
     var(--paper);
 }
 
@@ -37,14 +37,14 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 12px 34px rgba(25, 34, 73, 0.045);
+  box-shadow: 0 12px 34px rgba(51, 43, 33, 0.05);
   transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .package-card:hover {
   transform: translateY(-4px);
-  border-color: #c9c4ff;
-  box-shadow: 0 20px 42px rgba(49, 44, 112, 0.11);
+  border-color: #cfc0ad;
+  box-shadow: 0 20px 42px rgba(51, 43, 33, 0.11);
 }
 
 .package-card__heading {
@@ -60,7 +60,7 @@
   height: 2.65rem;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid #e3e0ff;
+  border: 1px solid #e3dbcf;
   border-radius: 0.85rem;
   background: var(--lavender);
   color: var(--accent);

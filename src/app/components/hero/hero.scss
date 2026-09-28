@@ -3,8 +3,8 @@
   isolation: isolate;
   padding: clamp(3.75rem, 7vw, 6.5rem) 0 1.5rem;
   background:
-    radial-gradient(ellipse at 77% 24%, rgba(198, 193, 255, 0.2), transparent 35%),
-    linear-gradient(180deg, #fbfcff 0%, #f7f8ff 100%);
+    radial-gradient(ellipse at 77% 24%, rgba(198, 171, 143, 0.2), transparent 35%),
+    linear-gradient(180deg, #fbf9f5 0%, #f5f0e8 100%);
 }
 
 .hero::before {
@@ -14,7 +14,7 @@
   right: max(2rem, calc((100vw - var(--content-width)) / 2));
   width: 7rem;
   height: 7rem;
-  border: 1px solid rgba(101, 88, 232, 0.14);
+  border: 1px solid rgba(128, 102, 77, 0.18);
   border-radius: 50%;
   content: '';
 }
@@ -75,7 +75,7 @@
   flex: 0 0 2.5rem;
   place-items: center;
   border-radius: 50%;
-  background: #e8ecdf;
+  background: #e8e9df;
   color: var(--accent);
   font-size: 1.2rem;
 }
@@ -96,10 +96,10 @@
   position: relative;
   height: 32rem;
   padding: 0.7rem;
-  border: 1px solid rgba(101, 88, 232, 0.12);
+  border: 1px solid rgba(128, 102, 77, 0.16);
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 28px 70px rgba(34, 43, 91, 0.14);
+  box-shadow: 0 28px 70px rgba(51, 43, 33, 0.14);
 }
 
 .hero__visual > img {

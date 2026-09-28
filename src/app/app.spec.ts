@@ -25,41 +25,65 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('renders the active salon profile across the site sections', async () => {
+  it('renders the active UrbanNest Interiors profile across the site sections', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hair & beauty care');
+    const profile = BUSINESS_PROFILES.professionalServices;
+    expect(ACTIVE_BUSINESS_TYPE).toBe('professionalServices');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Interiors shaped');
+    expect(compiled.querySelector('.hero__description')?.textContent).toContain('Plan a home that feels considered and comfortable');
+    const heroImage = compiled.querySelector('.hero__visual img');
+    const aboutImage = compiled.querySelector('.about__visual img');
+    expect(heroImage?.getAttribute('src')).toBe('/assets/images/urbannest-hero-placeholder.svg');
+    expect(heroImage?.getAttribute('alt')).toContain('Illustration of a warm, contemporary living room');
+    expect(heroImage?.getAttribute('loading')).toBe('eager');
+    expect(heroImage?.getAttribute('fetchpriority')).toBe('high');
+    expect(aboutImage?.getAttribute('src')).toBe('/assets/images/urbannest-about-placeholder.svg');
+    expect(aboutImage?.getAttribute('alt')).toContain('Illustration of an interior design workspace');
+    expect(aboutImage?.getAttribute('loading')).toBe('lazy');
     expect(compiled.querySelectorAll('.service-card h3')).toHaveLength(6);
+    expect(Array.from(compiled.querySelectorAll('.service-card h3'), (heading) => heading.textContent?.trim())).toEqual([
+      'Interior design consultation',
+      'Space planning',
+      'Residential interiors',
+      'Kitchen & wardrobe design',
+      'Materials & finishes',
+      'Styling & decor',
+    ]);
     expect(compiled.querySelectorAll('.package-card')).toHaveLength(3);
     expect(compiled.querySelectorAll('.package-card__cta[href="#contact"]')).toHaveLength(3);
     expect(compiled.querySelector('.package-card[aria-labelledby="package-starter"]')?.textContent).toContain('1–3 pages');
     expect(compiled.querySelector('.package-card[aria-labelledby="package-business"]')?.textContent).toContain('WhatsApp / contact CTA');
     expect(compiled.querySelector('.package-card[aria-labelledby="package-custom"]')?.textContent).toContain('API integration when required');
-    expect(compiled.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.brand__name')?.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Enquire about an appointment');
-    expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Enquire about an appointment');
-    expect(compiled.querySelector('.hero__description')?.textContent).toContain('ask about appointments');
-    expect(compiled.querySelector('.contact__details a[href="mailto:greenleaf@example.com"]')?.textContent).toContain('greenleaf@example.com');
-    expect(compiled.querySelector('.contact__details a[href="tel:+919876543210"]')?.textContent).toContain('+91 98765 43210');
-    const expectedWhatsAppUrl = `https://wa.me/${WHATSAPP_CONFIG.whatsappNumber}?text=${encodeURIComponent(WHATSAPP_CONFIG.whatsappMessage)}`;
+    expect(compiled.textContent).toContain('UrbanNest Interiors');
+    expect(compiled.querySelector('.brand__primary')?.textContent?.trim()).toBe('UrbanNest');
+    expect(compiled.querySelector('.brand__descriptor')?.textContent?.trim()).toBe('Interiors');
+    expect(compiled.querySelector('.brand')?.getAttribute('aria-label')).toBe('UrbanNest Interiors home');
+    expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Discuss your space');
+    expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Discuss your space');
+    expect(compiled.querySelector('.contact__details a[href="mailto:hello@urbannestinteriors.example"]')?.textContent).toContain('hello@urbannestinteriors.example');
+    expect(compiled.querySelector('.contact__details a[href="tel:+919000000032"]')?.textContent).toContain('+91 90000 00032');
+    expect(profile.whatsappNumber).toBe('919000000032');
+    expect(profile.phone).toBe('+91 90000 00032');
+    const expectedWhatsAppUrl = `https://wa.me/919000000032?text=${encodeURIComponent(WHATSAPP_CONFIG.whatsappMessage)}`;
     expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('href')).toBe(expectedWhatsAppUrl);
-    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('aria-label')).toBe('Chat with GreenLeaf Salon on WhatsApp');
+    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('aria-label')).toBe('Chat with UrbanNest Interiors on WhatsApp');
     expect(compiled.querySelector('.contact__whatsapp')?.textContent).not.toContain('Demo WhatsApp number');
     expect(compiled.querySelector('.contact__availability')).toBeNull();
     expect(compiled.querySelector('.footer__bottom')?.textContent).not.toContain('sample contact details');
     expect(compiled.textContent).not.toContain('Browse a sample');
     expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('href')).toBe(expectedWhatsAppUrl);
-    expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('aria-label')).toBe('Chat with GreenLeaf Salon on WhatsApp');
+    expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('aria-label')).toBe('Chat with UrbanNest Interiors on WhatsApp');
     expect(compiled.querySelector('.contact__address')?.textContent).toContain('Salem, Tamil Nadu');
-    expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe('Contact GreenLeaf Salon');
-    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain('Professional Hair & Beauty Care');
-    expect(compiled.querySelector('.footer__bottom')?.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.footer__links a[href="mailto:greenleaf@example.com"]')).not.toBeNull();
-    expect(compiled.querySelector('.footer__links a[href="tel:+919876543210"]')?.textContent).toContain('+91 98765 43210');
+    expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe('Contact UrbanNest Interiors');
+    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain('Beautiful spaces. Thoughtfully designed.');
+    expect(compiled.querySelector('.footer__bottom')?.textContent).toContain('UrbanNest Interiors');
+    expect(compiled.querySelector('.footer__links a[href="mailto:hello@urbannestinteriors.example"]')).not.toBeNull();
+    expect(compiled.querySelector('.footer__links a[href="tel:+919000000032"]')?.textContent).toContain('+91 90000 00032');
     expect(compiled.querySelector('.footer__links')?.textContent).toContain('Salem, Tamil Nadu');
-    expect(document.title).toContain('GreenLeaf Salon');
+    expect(document.title).toBe(profile.pageTitle);
+    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toBe(profile.pageDescription);
     expect(compiled.querySelectorAll('.outcome-card')).toHaveLength(3);
     expect(compiled.querySelectorAll('.contact__form option')).toHaveLength(8);
   });
@@ -73,7 +97,8 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(profile.name).not.toBe(BUSINESS_PROFILES[ACTIVE_BUSINESS_TYPE].name);
-    expect(compiled.querySelector('.brand__name')?.textContent).toContain(profile.name);
+    expect(compiled.querySelector('.brand__primary')?.textContent).toContain(profile.brandWordmark.primary);
+    expect(compiled.querySelector('.brand__descriptor')?.textContent).toContain(profile.brandWordmark.accent);
     expect(compiled.querySelector('.footer__brand p')?.textContent).toContain(profile.tagline);
     expect(compiled.querySelector('h1')?.textContent).toContain(profile.hero.headingLead);
     expect(compiled.querySelector('.hero__description')?.textContent).toContain(profile.hero.subheading);
@@ -140,7 +165,7 @@ describe('App', () => {
       expect(profile.contact.servicePrompt).toBeTruthy();
       expect(profile.contact.projectPrompt).toBeTruthy();
       expect(profile.packages).toBe(WEBSITE_PACKAGES);
-      expect(profile.whatsappNumber).toBe(WHATSAPP_CONFIG.whatsappNumber);
+      expect(profile.whatsappNumber).toBe(type === 'professionalServices' ? '919000000032' : WHATSAPP_CONFIG.whatsappNumber);
       expect(profile.whatsappMessage).toBe(WHATSAPP_CONFIG.whatsappMessage);
       expect(profile.enableWhatsapp).toBe(WHATSAPP_CONFIG.enableWhatsapp);
       expect(profile.whatsappUrl).toContain(encodeURIComponent(profile.whatsappMessage));

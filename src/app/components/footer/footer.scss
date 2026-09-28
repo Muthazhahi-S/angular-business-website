@@ -1,6 +1,6 @@
 .footer {
   padding: 3.5rem 0 1.3rem;
-  background: #11162d;
+  background: var(--surface-dark);
   color: var(--white);
 }
 
@@ -15,12 +15,11 @@
 .footer app-brand {
   --ink: var(--white);
   --brand-accent: var(--lime);
-  --accent: #6558e8;
 }
 
 .footer__brand > p {
   margin: 1rem 0 0;
-  color: #c2c9de;
+  color: #d0d2c9;
   font-size: 0.8rem;
   line-height: 1.6;
 }
@@ -46,7 +45,7 @@
 
 .footer__links a,
 .footer__links span {
-  color: #d0d5e5;
+  color: #e0e1db;
   font-size: 0.78rem;
   text-decoration: none;
 }
@@ -79,13 +78,13 @@
   justify-content: space-between;
   gap: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(215, 223, 248, 0.18);
+  border-top: 1px solid rgba(240, 235, 226, 0.2);
 }
 
 .footer__bottom p,
 .footer__bottom a {
   margin: 0;
-  color: #c2c9de;
+  color: #d0d2c9;
   font-size: 0.67rem;
   text-decoration: none;
 }

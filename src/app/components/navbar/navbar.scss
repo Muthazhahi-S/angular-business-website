@@ -6,8 +6,8 @@
 }
 
 .site-header {
-  border-bottom: 1px solid rgba(33, 43, 82, 0.08);
-  background: rgba(251, 252, 255, 0.92);
+  border-bottom: 1px solid rgba(51, 43, 33, 0.09);
+  background: rgba(251, 249, 245, 0.92);
   backdrop-filter: blur(16px);
 }
 
@@ -42,7 +42,7 @@
   align-items: center;
   gap: 0.65rem;
   padding: 0 1rem;
-  border: 1px solid #d9def0;
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   color: var(--ink);
   font-weight: 600;
@@ -50,7 +50,7 @@
 }
 
 .nav__links .nav__contact:hover {
-  border-color: #cbc5ff;
+  border-color: #cfc0ad;
   background: var(--lavender);
 }
 
@@ -75,7 +75,7 @@
 }
 
 .menu-toggle:hover {
-  border-color: #bcb5fa;
+  border-color: #c2b29e;
   background: var(--lavender);
 }
 
@@ -106,7 +106,7 @@
     gap: 0;
     padding: 0.5rem 1.25rem 1.25rem;
     border-bottom: 1px solid var(--line);
-    box-shadow: 0 18px 32px rgba(25, 34, 73, 0.08);
+    box-shadow: 0 18px 32px rgba(51, 43, 33, 0.09);
     background: var(--paper);
   }
 
