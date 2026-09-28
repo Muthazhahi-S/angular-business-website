@@ -1,0 +1,33 @@
+<section class="testimonials section" id="testimonials" aria-labelledby="testimonials-title">
+  <div class="container">
+    <div class="testimonials__heading">
+      <div>
+        <p class="eyebrow">Kind words, real progress</p>
+        <h2 class="section-heading" id="testimonials-title">The work speaks<br>for itself.</h2>
+      </div>
+      <p class="section-intro">We measure success by what changes for our clients. Here's what a few of them had to say.</p>
+    </div>
+    <div class="testimonials__grid">
+      @for (story of stories; track story.name) {
+        <figure class="quote-card">
+          <div class="quote-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>“{{ story.quote }}”</blockquote>
+          <figcaption>
+            <span
+              class="quote-card__avatar"
+              [class.quote-card__avatar--sage]="story.tone === 'sage'"
+              [class.quote-card__avatar--sand]="story.tone === 'sand'"
+              [class.quote-card__avatar--rose]="story.tone === 'rose'"
+              aria-hidden="true"
+            >{{ story.initials }}</span>
+            <span><strong>{{ story.name }}</strong><small>{{ story.role }}</small></span>
+          </figcaption>
+        </figure>
+      }
+    </div>
+    <div class="testimonials__foot">
+      <p><strong>80+</strong> ambitious teams have found their north star.</p>
+      <a class="text-link" href="#contact">Let's make your story next <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,20 @@
+<section class="why section" aria-labelledby="why-title">
+  <div class="container why__grid">
+    <div class="why__intro">
+      <p class="eyebrow">Why Northstar</p>
+      <h2 class="section-heading" id="why-title">Good work starts<br>with <em>good people.</em></h2>
+      <p class="section-intro">
+        Choosing a partner is personal. Here's what you can expect when we're in your corner.
+      </p>
+      <a class="button button--light" href="#contact">Meet your new team <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="why__list">
+      @for (principle of principles; track principle.number) {
+        <article class="why__item">
+          <span>{{ principle.number }}</span>
+          <div><h3>{{ principle.title }}</h3><p>{{ principle.text }}</p></div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

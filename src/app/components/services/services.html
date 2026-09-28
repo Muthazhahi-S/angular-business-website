@@ -1,0 +1,32 @@
+<section class="services section" id="services" aria-labelledby="services-title">
+  <div class="container">
+    <div class="services__heading">
+      <div>
+        <p class="eyebrow">What we do</p>
+        <h2 class="section-heading" id="services-title">Good strategy makes<br>everything <em>possible.</em></h2>
+      </div>
+      <p class="section-intro">
+        From the first big question to the details that make it real, we bring the right people and thinking to every challenge.
+      </p>
+    </div>
+    <div class="services__grid">
+      @for (service of services; track service.number) {
+        <article class="service-card">
+          <div class="service-card__top">
+            <span class="service-card__symbol" aria-hidden="true">{{ service.symbol }}</span>
+            <span class="service-card__number">{{ service.number }}</span>
+          </div>
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.description }}</p>
+          <a href="#contact" [attr.aria-label]="'Ask us about ' + service.name">
+            Explore service <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+      }
+    </div>
+    <div class="services__foot">
+      <p>Not sure where to start? That's a good place to start.</p>
+      <a class="text-link" href="#contact">Tell us what you're working on <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

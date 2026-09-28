@@ -1,0 +1,135 @@
+.testimonials {
+  padding: var(--section-space) 0;
+  background: var(--paper-deep);
+}
+
+.testimonials__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.testimonials__heading .section-intro {
+  max-width: 390px;
+  margin: 0 0 0.35rem;
+}
+
+.testimonials__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.quote-card {
+  display: flex;
+  min-height: 19.5rem;
+  flex-direction: column;
+  margin: 0;
+  padding: 1.7rem;
+  background: var(--paper);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.quote-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px rgba(24, 40, 33, 0.08);
+}
+
+.quote-card__stars {
+  color: #9a783f;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+}
+
+.quote-card blockquote {
+  flex: 1;
+  margin: 1.25rem 0 1.6rem;
+  color: var(--ink);
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.2rem;
+  line-height: 1.55;
+}
+
+.quote-card figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.quote-card__avatar {
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: 0 0 2.6rem;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.quote-card__avatar--sage {
+  background: #d4dfcf;
+}
+
+.quote-card__avatar--sand {
+  background: #e4d5bb;
+}
+
+.quote-card__avatar--rose {
+  background: #ead1c5;
+}
+
+.quote-card figcaption strong,
+.quote-card figcaption small {
+  display: block;
+}
+
+.quote-card figcaption strong {
+  font-size: 0.78rem;
+}
+
+.quote-card figcaption small {
+  margin-top: 0.1rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.testimonials__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.7rem;
+}
+
+.testimonials__foot p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.testimonials__foot strong {
+  color: var(--green);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 900px) {
+  .testimonials__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-card {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .testimonials__heading,
+  .testimonials__foot {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
