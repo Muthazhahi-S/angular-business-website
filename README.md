@@ -22,7 +22,7 @@ Use this checklist to prepare a client version. Business content and the active 
   - Contact headings, form labels, prompts, and button copy in `contact`.
   - Browser/page title and search description in `pageTitle` and `pageDescription`.
 - [ ] **Set WhatsApp details.** Edit `WHATSAPP_CONFIG` near the top of `site-profile.ts`. The settings are shared by all six profiles. Use the international number with digits only (no `+`, spaces, or punctuation), then set the pre-filled `whatsappMessage`. Set `enableWhatsapp` to `true` to show the contact and floating CTAs, or `false` to hide them.
-- [ ] **Review website packages.** Edit `WEBSITE_PACKAGES` in `site-profile.ts`; it is intentionally shared by all profiles. Set each `price` to a display string when ready, or keep it `null` to show no price.
+- [ ] **Review website packages.** Edit `WEBSITE_PACKAGES` in `site-profile.ts`; these configurable starting fees are for website design and development and are shared by all business profiles. They are not prices for a client's salon, restaurant, clinic, shop, or professional services. Update each `price` display string to match your current quote, or set it to `null` to hide it.
 - [ ] **Replace demo images.** In the selected profile's `hero.imageUrl` and `about.imageUrl`, replace the current URLs with client-approved image URLs. For local assets, place files under `public/` and use paths such as `/images/client-hero.jpg`. Update the matching `imageAlt` text to describe each image.
 - [ ] **Check demo settings and details.** Replace sample contact values before publishing. `DEMO_SETTINGS.showReminders` controls whether internal reminders are shown; it is `false` by default. The WhatsApp demo number is in `WHATSAPP_CONFIG`.
 - [ ] **Review the result** at desktop and mobile widths, including every link, the contact form, and WhatsApp.
@@ -42,7 +42,7 @@ Collect and confirm these details with the client before preparing their website
 - [ ] Google Maps URL, if it should be linked on the site. The current profile has no Maps-link field.
 - [ ] Business hours, if they should be displayed. The current profile has no hours field.
 - [ ] Services and accurate descriptions in the selected profile's `services.items`.
-- [ ] Service prices, only if the client wants them shown; confirm the values and update `WEBSITE_PACKAGES` or agree on where service-specific prices belong.
+- [ ] Business service prices, only if the client wants them shown; confirm the values and agree where service-specific prices belong. `WEBSITE_PACKAGES` contains your website project starting fees, not the client's service prices.
 - [ ] Hero image and accurate alternative text (`hero.imageUrl` and `hero.imageAlt`).
 - [ ] About/business images and accurate alternative text (`about.imageUrl` and `about.imageAlt`).
 - [ ] Social media profile URLs, if they should be linked on the site. Social links are not currently configured in the profile.

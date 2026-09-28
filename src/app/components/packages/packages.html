@@ -9,6 +9,9 @@
         Choose a scope that fits your business today. Every project can be discussed and tailored to your requirements.
       </p>
     </div>
+    <p class="packages__pricing-note">
+      Starting prices for website design and development projects. These are not prices for GreenLeaf Salon services.
+    </p>
 
     <div class="packages__grid">
       @for (websitePackage of packages; track websitePackage.id) {
@@ -19,7 +22,10 @@
           </div>
 
           @if (websitePackage.price) {
-            <p class="package-card__price">{{ websitePackage.price }}</p>
+            <p class="package-card__price">
+              <span class="package-card__price-label">Starting at</span>
+              {{ websitePackage.price }}
+            </p>
           }
 
           <ul class="package-card__features" [attr.aria-label]="websitePackage.name + ' features'">

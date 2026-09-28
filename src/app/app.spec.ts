@@ -44,6 +44,10 @@ describe('App', () => {
     expect(compiled.querySelector('.package-card[aria-labelledby="package-starter"]')?.textContent).toContain('1–3 pages');
     expect(compiled.querySelector('.package-card[aria-labelledby="package-business"]')?.textContent).toContain('WhatsApp / contact CTA');
     expect(compiled.querySelector('.package-card[aria-labelledby="package-custom"]')?.textContent).toContain('API integration when required');
+    expect(compiled.querySelector('.package-card[aria-labelledby="package-starter"]')?.textContent).toContain('₹5,000 onwards');
+    expect(compiled.querySelector('.package-card[aria-labelledby="package-business"]')?.textContent).toContain('₹10,000 onwards');
+    expect(compiled.querySelector('.package-card[aria-labelledby="package-custom"]')?.textContent).toContain('₹20,000+');
+    expect(compiled.querySelector('.packages__pricing-note')?.textContent).toContain('not prices for GreenLeaf Salon services');
     expect(compiled.textContent).toContain('GreenLeaf Salon');
     const brandLinks = compiled.querySelectorAll('.brand');
     expect(brandLinks).toHaveLength(2);
@@ -166,6 +170,10 @@ describe('App', () => {
     }
 
     expect(WEBSITE_PACKAGES).toHaveLength(3);
-    expect(WEBSITE_PACKAGES.every((websitePackage) => websitePackage.price === null)).toBe(true);
+    expect(WEBSITE_PACKAGES.map((websitePackage) => websitePackage.price)).toEqual([
+      '₹5,000 onwards',
+      '₹10,000 onwards',
+      '₹20,000+',
+    ]);
   });
 });

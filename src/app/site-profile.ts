@@ -54,11 +54,11 @@ export const WEBSITE_PACKAGES: readonly WebsitePackage[] = [
     suitableFor: 'Suitable for small and local businesses.',
     features: [
       '1–3 pages',
-      'Mobile responsive',
-      'Contact form',
+      'Responsive design for mobile, tablet, and desktop',
+      'Contact form and enquiry CTA',
       'Basic SEO-friendly structure',
     ],
-    price: null,
+    price: '₹5,000 onwards',
   },
   {
     id: 'business',
@@ -66,12 +66,12 @@ export const WEBSITE_PACKAGES: readonly WebsitePackage[] = [
     suitableFor: 'Suitable for growing businesses.',
     features: [
       '4–7 pages',
-      'Mobile responsive',
-      'Contact form',
+      'Responsive design for mobile, tablet, and desktop',
+      'Contact form and enquiry CTA',
       'WhatsApp / contact CTA',
       'Basic SEO-friendly structure',
     ],
-    price: null,
+    price: '₹10,000 onwards',
   },
   {
     id: 'custom',
@@ -79,11 +79,15 @@ export const WEBSITE_PACKAGES: readonly WebsitePackage[] = [
     suitableFor: 'Suitable for businesses with specific requirements.',
     features: [
       'Custom page structure',
+      'Responsive design for mobile, tablet, and desktop',
       'Advanced UI requirements',
       'Custom Angular functionality',
       'API integration when required',
+      'Contact form and enquiry CTA',
+      'WhatsApp CTA when required',
+      'Basic SEO-friendly structure',
     ],
-    price: null,
+    price: '₹20,000+',
   },
 ];
 
