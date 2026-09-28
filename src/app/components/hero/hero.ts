@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
   selector: 'app-hero',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
 })
-export class Hero {}
+export class Hero {
+  protected readonly business = BUSINESS_PROFILE;
+}

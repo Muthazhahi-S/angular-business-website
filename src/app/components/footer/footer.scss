@@ -1,6 +1,6 @@
 .footer {
   padding: 3.5rem 0 1.3rem;
-  background: #17271f;
+  background: #11162d;
   color: var(--white);
 }
 
@@ -15,11 +15,12 @@
 .footer app-brand {
   --ink: var(--white);
   --brand-accent: var(--lime);
+  --accent: #6558e8;
 }
 
 .footer__brand > p {
   margin: 1rem 0 0;
-  color: rgba(255, 255, 255, 0.6);
+  color: #c2c9de;
   font-size: 0.8rem;
   line-height: 1.6;
 }
@@ -45,7 +46,7 @@
 
 .footer__links a,
 .footer__links span {
-  color: rgba(255, 255, 255, 0.68);
+  color: #d0d5e5;
   font-size: 0.78rem;
   text-decoration: none;
 }
@@ -64,6 +65,10 @@
   text-decoration: none;
 }
 
+.footer__top:hover {
+  color: var(--lime);
+}
+
 .footer__top span {
   color: var(--lime);
 }
@@ -74,13 +79,13 @@
   justify-content: space-between;
   gap: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(215, 223, 248, 0.18);
 }
 
 .footer__bottom p,
 .footer__bottom a {
   margin: 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: #c2c9de;
   font-size: 0.67rem;
   text-decoration: none;
 }

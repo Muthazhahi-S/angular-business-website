@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
   selector: 'app-why-us',
@@ -7,10 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './why-us.scss',
 })
 export class WhyUs {
-  protected readonly principles = [
-    { number: '01', title: 'We get the whole picture', text: 'No off-the-shelf playbooks. We take time to understand your goals, people, and pressures first.' },
-    { number: '02', title: 'Straight talk, always', text: 'Clear advice, honest conversations, and a team that tells you what you need to hear.' },
-    { number: '03', title: 'Better together', text: 'We work with your people, not around them. The best ideas are the ones your team believes in.' },
-    { number: '04', title: 'Progress you can see', text: 'Practical work, shared measures of success, and momentum that lasts beyond a slide deck.' },
-  ];
+  protected readonly business = BUSINESS_PROFILE;
+  protected readonly principles = BUSINESS_PROFILE.why.principles.map((principle, index) => ({
+    ...principle,
+    number: String(index + 1).padStart(2, '0'),
+  }));
 }

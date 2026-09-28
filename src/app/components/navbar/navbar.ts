@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { Brand } from '../brand/brand';
+import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
   selector: 'app-navbar',
@@ -8,6 +9,7 @@ import { Brand } from '../brand/brand';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
+  protected readonly business = BUSINESS_PROFILE;
   protected readonly menuOpen = signal(false);
 
   protected toggleMenu(): void {

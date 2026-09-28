@@ -1,0 +1,44 @@
+<section class="packages section" id="packages" aria-labelledby="packages-title">
+  <div class="container">
+    <div class="packages__heading">
+      <div>
+        <p class="eyebrow">Website packages</p>
+        <h2 class="section-heading" id="packages-title">A clear starting point for <em>your website.</em></h2>
+      </div>
+      <p class="section-intro">
+        Choose a scope that fits your business today. Every project can be discussed and tailored to your requirements.
+      </p>
+    </div>
+
+    <div class="packages__grid">
+      @for (websitePackage of packages; track websitePackage.id) {
+        <article class="package-card" [attr.aria-labelledby]="'package-' + websitePackage.id">
+          <div class="package-card__heading">
+            <span class="package-card__number" aria-hidden="true">{{ $index + 1 }}</span>
+            <h3 [id]="'package-' + websitePackage.id">{{ websitePackage.name }}</h3>
+          </div>
+
+          @if (websitePackage.price) {
+            <p class="package-card__price">{{ websitePackage.price }}</p>
+          }
+
+          <ul class="package-card__features" [attr.aria-label]="websitePackage.name + ' features'">
+            @for (feature of websitePackage.features; track feature) {
+              <li>{{ feature }}</li>
+            }
+          </ul>
+
+          <p class="package-card__fit">{{ websitePackage.suitableFor }}</p>
+
+          <a
+            class="button package-card__cta"
+            href="#contact"
+            [attr.aria-label]="'Discuss the ' + websitePackage.name + ' with us'"
+          >
+            Discuss this package <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+      }
+    </div>
+  </div>
+</section>

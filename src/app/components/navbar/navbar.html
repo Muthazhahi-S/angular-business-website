@@ -17,10 +17,11 @@
 
     <div class="nav__links" id="primary-links" [class.nav__links--open]="menuOpen()">
       <a href="#services" (click)="closeMenu()">What we do</a>
+      <a href="#packages" (click)="closeMenu()">Packages</a>
       <a href="#about" (click)="closeMenu()">About us</a>
-      <a href="#testimonials" (click)="closeMenu()">Our approach</a>
+      <a href="#process" (click)="closeMenu()">Our process</a>
       <a class="nav__contact" href="#contact" (click)="closeMenu()">
-        Let's talk <span aria-hidden="true">↗</span>
+        {{ business.navigation.contactCta }} <span aria-hidden="true">↗</span>
       </a>
     </div>
   </nav>

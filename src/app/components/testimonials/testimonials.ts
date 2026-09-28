@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
   selector: 'app-testimonials',
@@ -7,9 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './testimonials.scss',
 })
 export class Testimonials {
-  protected readonly outcomes = [
-    { number: '01', title: 'A clearer direction', description: 'A shared understanding of what matters now, what can wait, and where to focus next.' },
-    { number: '02', title: 'A plan people own', description: 'Practical next steps shaped with your team, grounded in the way your business works.' },
-    { number: '03', title: 'Progress that lasts', description: 'Better decisions and useful momentum that carry on long after the initial engagement.' },
-  ];
+  protected readonly business = BUSINESS_PROFILE;
+  protected readonly outcomes = BUSINESS_PROFILE.process.steps.map((step, index) => ({
+    ...step,
+    number: String(index + 1).padStart(2, '0'),
+  }));
 }

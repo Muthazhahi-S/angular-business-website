@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
   selector: 'app-about',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './about.html',
   styleUrl: './about.scss',
 })
-export class About {}
+export class About {
+  protected readonly business = BUSINESS_PROFILE;
+}

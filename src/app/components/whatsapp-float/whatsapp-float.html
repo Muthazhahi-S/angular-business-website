@@ -1,0 +1,12 @@
+@if (business.enableWhatsapp && !contactVisible()) {
+  <a
+    class="whatsapp-float"
+    [href]="business.whatsappUrl"
+    target="_blank"
+    rel="noopener noreferrer"
+    [attr.aria-label]="'Chat with ' + business.name + ' on WhatsApp'"
+    title="Chat on WhatsApp"
+  >
+    <span aria-hidden="true">WA</span>
+  </a>
+}

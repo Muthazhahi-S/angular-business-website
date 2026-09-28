@@ -1,11 +1,11 @@
-<section class="testimonials section" id="testimonials" aria-labelledby="testimonials-title">
+<section class="testimonials section" id="process" aria-labelledby="process-title">
   <div class="container">
     <div class="testimonials__heading">
       <div>
-        <p class="eyebrow">Our approach</p>
-        <h2 class="section-heading" id="testimonials-title">Progress you can<br><em>build on.</em></h2>
+        <p class="eyebrow">{{ business.process.eyebrow }}</p>
+        <h2 class="section-heading" id="process-title">{{ business.process.headingLead }}<br><em>{{ business.process.headingEmphasis }}</em>.</h2>
       </div>
-      <p class="section-intro">Every business is different. The work starts with your context and is shaped around the change you want to make.</p>
+      <p class="section-intro">{{ business.process.intro }}</p>
     </div>
     <div class="testimonials__grid">
       @for (outcome of outcomes; track outcome.number) {
@@ -18,8 +18,8 @@
       }
     </div>
     <div class="testimonials__foot">
-      <p>Start with a conversation about where you'd like to go.</p>
-      <a class="text-link" href="#contact">Talk through your next step <span aria-hidden="true">→</span></a>
+      <p>{{ business.process.footerText }}</p>
+      <a class="text-link" href="#contact">{{ business.process.footerCta }} <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>

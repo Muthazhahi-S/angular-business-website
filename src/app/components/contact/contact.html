@@ -1,59 +1,79 @@
 <section class="contact section" id="contact" aria-labelledby="contact-title">
   <div class="container contact__grid">
     <div class="contact__copy">
-      <p class="eyebrow">Your next chapter starts here</p>
-      <h2 class="section-heading" id="contact-title">Let's make<br>something <em>matter.</em></h2>
+      <p class="eyebrow">{{ business.contact.eyebrow }}</p>
+      <h2 class="section-heading" id="contact-title">{{ business.contact.headingLead }}<br><em>{{ business.contact.headingEmphasis }}</em></h2>
       <p class="section-intro">
-        Tell us what's on your mind. No pitch deck, no pressure—just a thoughtful first conversation.
+        {{ business.contact.intro }}
       </p>
       <div class="contact__details">
-        <a href="mailto:hello@northstar.studio">
+        <a [href]="'mailto:' + business.email">
           <span class="contact__detail-icon" aria-hidden="true">✉</span>
-          <span><small>Write us a note</small><strong>hello&#64;northstar.studio</strong></span>
+          <span><small>Email</small><strong>{{ business.email }}</strong></span>
         </a>
-        <a href="tel:+14155550184">
+        <a [href]="'tel:' + business.phoneLink">
           <span class="contact__detail-icon" aria-hidden="true">↗</span>
-          <span><small>Give us a call</small><strong>+1 (415) 555-0184</strong></span>
+          <span><small>Phone</small><strong>{{ business.phone }}</strong></span>
         </a>
+        <div class="contact__address">
+          <span class="contact__detail-icon" aria-hidden="true">⌖</span>
+          <span><small>Location</small><strong>{{ business.address }}</strong></span>
+        </div>
       </div>
-      <p class="contact__availability"><span aria-hidden="true"></span> Currently welcoming new partnerships</p>
+      @if (business.enableWhatsapp) {
+        <div class="contact__whatsapp">
+          <a
+            class="contact__whatsapp-link"
+            [href]="business.whatsappUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            [attr.aria-label]="'Chat with ' + business.name + ' on WhatsApp'"
+          >
+            <span aria-hidden="true">WA</span>
+            Chat with us on WhatsApp <span aria-hidden="true">↗</span>
+          </a>
+          @if (business.demoMode && business.showDemoReminders) {
+            <p>{{ business.whatsappDemoReminder }}</p>
+          }
+        </div>
+      }
+      @if (business.demoMode && business.showDemoReminders) {
+        <p class="contact__availability">{{ business.contact.demoReminder }}</p>
+      }
     </div>
     <form
       class="contact__form"
-      aria-label="Contact Northstar Studio"
+      [attr.aria-label]="'Contact ' + business.name"
       (submit)="submitContact($event, contactForm)"
       #contactForm
     >
       <div class="contact__form-row">
         <label>
           Your name
-          <input name="name" type="text" autocomplete="name" placeholder="Alex Morgan" required>
+          <input name="name" type="text" autocomplete="name" placeholder="Enter your name" required>
         </label>
         <label>
           Email address
-          <input name="email" type="email" autocomplete="email" placeholder="alex@company.com" required>
+          <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
         </label>
       </div>
       <label>
         What would you like help with?
         <select name="interest" required>
-          <option value="" disabled selected>Choose a focus area</option>
-          <option>Business strategy</option>
-          <option>Growth &amp; go-to-market</option>
-          <option>Brand positioning</option>
-          <option>Customer experience</option>
-          <option>Team &amp; culture</option>
-          <option>Digital transformation</option>
+          <option value="" disabled selected>{{ business.contact.servicePrompt }}</option>
+          @for (service of business.services.items; track service.name) {
+            <option>{{ service.name }}</option>
+          }
           <option>Something else</option>
         </select>
       </label>
       <label>
         A little about your project
-        <textarea name="details" rows="4" placeholder="What's the opportunity or challenge you're thinking about?" required></textarea>
+        <textarea name="details" rows="4" [placeholder]="business.contact.projectPrompt" required></textarea>
       </label>
-      <button class="button button--light" type="submit">Send your note <span aria-hidden="true">↗</span></button>
+      <button class="button button--light" type="submit">{{ business.contact.formCta }} <span aria-hidden="true">↗</span></button>
       <p class="contact__form-note" role="status" aria-live="polite">
-        {{ submissionStatus() || 'This form opens your email app; no information is stored on this site.' }}
+        {{ submissionStatus() || 'This form opens your email app; it does not store or send information to a server.' }}
       </p>
     </form>
   </div>

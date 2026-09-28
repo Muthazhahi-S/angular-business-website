@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { BUSINESS_PROFILE } from '../../site-profile';
 
 @Component({
   selector: 'app-contact',
@@ -7,6 +8,7 @@ import { Component, signal } from '@angular/core';
   styleUrl: './contact.scss',
 })
 export class Contact {
+  protected readonly business = BUSINESS_PROFILE;
   protected readonly submissionStatus = signal('');
 
   protected submitContact(event: Event, form: HTMLFormElement): void {
@@ -20,7 +22,7 @@ export class Contact {
       `Project details: ${fields.get('details')}`,
     ].join('\n\n');
 
-    this.submissionStatus.set('Opening your email app with your enquiry. If it does not open, email hello@northstar.studio.');
-    window.location.href = `mailto:hello@northstar.studio?subject=Website%20enquiry&body=${encodeURIComponent(message)}`;
+    this.submissionStatus.set(`Opening your email app with your enquiry. If it does not open, email ${this.business.email}.`);
+    window.location.href = `mailto:${this.business.email}?subject=Website%20enquiry&body=${encodeURIComponent(message)}`;
   }
 }
