@@ -1,9 +1,7 @@
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
-  <nav class="container nav" aria-label="Main navigation">
-    <a class="brand" href="#home" aria-label="Northstar Studio home" (click)="closeMenu()">
-      <span class="brand__mark" aria-hidden="true">N</span>
-      <span class="brand__name">northstar<span>studio</span></span>
-    </a>
+  <nav class="container nav" aria-label="Main navigation" (keydown.escape)="closeMenu()">
+    <app-brand (click)="closeMenu()" />
 
     <button
       class="menu-toggle"
@@ -20,7 +18,7 @@
     <div class="nav__links" id="primary-links" [class.nav__links--open]="menuOpen()">
       <a href="#services" (click)="closeMenu()">What we do</a>
       <a href="#about" (click)="closeMenu()">About us</a>
-      <a href="#testimonials" (click)="closeMenu()">Our clients</a>
+      <a href="#testimonials" (click)="closeMenu()">Our approach</a>
       <a class="nav__contact" href="#contact" (click)="closeMenu()">
         Let's talk <span aria-hidden="true">↗</span>
       </a>

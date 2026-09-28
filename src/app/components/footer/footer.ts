@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Brand } from '../brand/brand';
 
 @Component({
   selector: 'app-footer',
-  imports: [],
+  imports: [Brand],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })

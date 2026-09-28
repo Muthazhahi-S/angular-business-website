@@ -16,28 +16,27 @@
           <span><small>Give us a call</small><strong>+1 (415) 555-0184</strong></span>
         </a>
       </div>
-      <p class="contact__availability"><span aria-hidden="true"></span> Taking on a few new partnerships for fall 2026</p>
+      <p class="contact__availability"><span aria-hidden="true"></span> Currently welcoming new partnerships</p>
     </div>
     <form
       class="contact__form"
-      action="mailto:hello@northstar.studio"
-      method="post"
-      enctype="text/plain"
       aria-label="Contact Northstar Studio"
+      (submit)="submitContact($event, contactForm)"
+      #contactForm
     >
       <div class="contact__form-row">
         <label>
           Your name
-          <input name="Name" type="text" autocomplete="name" placeholder="Alex Morgan" required>
+          <input name="name" type="text" autocomplete="name" placeholder="Alex Morgan" required>
         </label>
         <label>
           Email address
-          <input name="Email" type="email" autocomplete="email" placeholder="alex@company.com" required>
+          <input name="email" type="email" autocomplete="email" placeholder="alex@company.com" required>
         </label>
       </div>
       <label>
         What would you like help with?
-        <select name="Area of interest" required>
+        <select name="interest" required>
           <option value="" disabled selected>Choose a focus area</option>
           <option>Business strategy</option>
           <option>Growth &amp; go-to-market</option>
@@ -50,10 +49,12 @@
       </label>
       <label>
         A little about your project
-        <textarea name="Project details" rows="4" placeholder="What's the opportunity or challenge you're thinking about?" required></textarea>
+        <textarea name="details" rows="4" placeholder="What's the opportunity or challenge you're thinking about?" required></textarea>
       </label>
       <button class="button button--light" type="submit">Send your note <span aria-hidden="true">↗</span></button>
-      <p class="contact__form-note">Your email app will open with your note ready to send.</p>
+      <p class="contact__form-note" role="status" aria-live="polite">
+        {{ submissionStatus() || 'This form opens your email app; no information is stored on this site.' }}
+      </p>
     </form>
   </div>
 </section>

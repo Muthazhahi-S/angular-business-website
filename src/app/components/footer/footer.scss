@@ -12,8 +12,9 @@
   padding-bottom: 3rem;
 }
 
-.footer .brand__name {
-  color: var(--white);
+.footer app-brand {
+  --ink: var(--white);
+  --brand-accent: var(--lime);
 }
 
 .footer__brand > p {
@@ -79,7 +80,7 @@
 .footer__bottom p,
 .footer__bottom a {
   margin: 0;
-  color: rgba(255, 255, 255, 0.53);
+  color: rgba(255, 255, 255, 0.72);
   font-size: 0.67rem;
   text-decoration: none;
 }

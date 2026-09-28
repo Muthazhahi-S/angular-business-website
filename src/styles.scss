@@ -2,7 +2,7 @@
   color-scheme: light;
   --ink: #182821;
   --ink-soft: #49564f;
-  --muted: #78827b;
+  --muted: #66716a;
   --paper: #fbfaf7;
   --paper-deep: #f1f0ea;
   --line: #e5e5de;
@@ -78,6 +78,24 @@ textarea:focus-visible {
 .container {
   width: min(calc(100% - 3rem), var(--content-width));
   margin-inline: auto;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  top: 0.75rem;
+  left: 0.75rem;
+  transform: translateY(-160%);
+  padding: 0.75rem 1rem;
+  background: var(--white);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(24, 40, 33, 0.16);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 .eyebrow {
@@ -162,17 +180,6 @@ textarea:focus-visible {
 
 .button--light:hover {
   background: #e4efbc;
-}
-
-.button--outline {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: transparent;
-  color: var(--white);
-}
-
-.button--outline:hover {
-  background: var(--white);
-  color: var(--green-dark);
 }
 
 @media (max-width: 600px) {
