@@ -29,7 +29,15 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hair & beauty care');
+    expect(compiled.querySelector('h1')?.textContent).toContain('A fresh look');
+    const heroImage = compiled.querySelector('.hero__visual img');
+    const aboutImage = compiled.querySelector('.about__visual img');
+    expect(heroImage?.getAttribute('src')).toBe('/assets/images/greenleaf-salon-hero-placeholder.svg');
+    expect(heroImage?.getAttribute('alt')).toContain('Illustrated salon interior placeholder');
+    expect(heroImage?.getAttribute('loading')).toBe('eager');
+    expect(aboutImage?.getAttribute('src')).toBe('/assets/images/greenleaf-salon-about-placeholder.svg');
+    expect(aboutImage?.getAttribute('alt')).toContain('Illustrated salon reception placeholder');
+    expect(aboutImage?.getAttribute('loading')).toBe('lazy');
     expect(compiled.querySelectorAll('.service-card h3')).toHaveLength(6);
     expect(compiled.querySelectorAll('.package-card')).toHaveLength(3);
     expect(compiled.querySelectorAll('.package-card__cta[href="#contact"]')).toHaveLength(3);
@@ -38,9 +46,9 @@ describe('App', () => {
     expect(compiled.querySelector('.package-card[aria-labelledby="package-custom"]')?.textContent).toContain('API integration when required');
     expect(compiled.textContent).toContain('GreenLeaf Salon');
     expect(compiled.querySelector('.brand__name')?.textContent).toContain('GreenLeaf Salon');
-    expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Enquire about an appointment');
-    expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Enquire about an appointment');
-    expect(compiled.querySelector('.hero__description')?.textContent).toContain('ask about appointments');
+    expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Enquire about a visit');
+    expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Enquire about a visit');
+    expect(compiled.querySelector('.hero__description')?.textContent).toContain('discuss your preferences');
     expect(compiled.querySelector('.contact__details a[href="mailto:greenleaf@example.com"]')?.textContent).toContain('greenleaf@example.com');
     expect(compiled.querySelector('.contact__details a[href="tel:+919876543210"]')?.textContent).toContain('+91 98765 43210');
     const expectedWhatsAppUrl = `https://wa.me/${WHATSAPP_CONFIG.whatsappNumber}?text=${encodeURIComponent(WHATSAPP_CONFIG.whatsappMessage)}`;
@@ -54,7 +62,7 @@ describe('App', () => {
     expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('aria-label')).toBe('Chat with GreenLeaf Salon on WhatsApp');
     expect(compiled.querySelector('.contact__address')?.textContent).toContain('Salem, Tamil Nadu');
     expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe('Contact GreenLeaf Salon');
-    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain('Professional Hair & Beauty Care');
+    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain('Hair & Beauty Care in Salem');
     expect(compiled.querySelector('.footer__bottom')?.textContent).toContain('GreenLeaf Salon');
     expect(compiled.querySelector('.footer__links a[href="mailto:greenleaf@example.com"]')).not.toBeNull();
     expect(compiled.querySelector('.footer__links a[href="tel:+919876543210"]')?.textContent).toContain('+91 98765 43210');
