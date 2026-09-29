@@ -1,0 +1,110 @@
+<section class="page-intro">
+  <div>
+    <p class="eyebrow">YOUR BUSINESS DETAILS</p>
+    <h2>Business profile</h2>
+    <p>Keep your business information up to date for your customer conversations.</p>
+  </div>
+  <span class="profile-complete"><span aria-hidden="true">✓</span> Business details</span>
+</section>
+
+@if (loading()) {
+  <section class="workspace-card profile-state" role="status" aria-live="polite">
+    <span class="profile-spinner" aria-hidden="true"></span>
+    <div><h3>Loading business profile</h3><p>Fetching your saved business information.</p></div>
+  </section>
+} @else if (loadError(); as message) {
+  <section class="workspace-card profile-state profile-state--error" role="alert">
+    <span class="profile-state__icon" aria-hidden="true">!</span>
+    <div><h3>We couldn’t load your profile</h3><p>{{ message }}</p></div>
+    <button class="profile-button profile-button--secondary" type="button" (click)="loadProfile()">Try again</button>
+  </section>
+} @else {
+  <section class="workspace-card profile-card">
+    <div class="workspace-card__heading">
+      <div>
+        <h3>Business profile details</h3>
+        <p>These details are saved to your BizPilot business profile.</p>
+      </div>
+    </div>
+
+    @if (saved()) {
+      <p class="profile-notice profile-notice--success" role="status">Your business profile was saved successfully.</p>
+    }
+    @if (saveError(); as message) {
+      <div class="profile-notice profile-notice--error" role="alert">
+        <p>{{ message }}</p>
+        <button class="profile-retry" type="button" [disabled]="saving()" (click)="saveProfile()">Retry</button>
+      </div>
+    }
+
+    <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate>
+      <section class="profile-form__section" aria-labelledby="business-information-heading">
+        <div class="profile-form__section-heading">
+          <h4 id="business-information-heading">Business Information</h4>
+          <p>How your business is identified.</p>
+        </div>
+        <div class="profile-form__grid">
+          <label class="profile-form__field">
+            <span>Business name <b aria-hidden="true">*</b></span>
+            <input formControlName="name" autocomplete="organization" [attr.aria-invalid]="hasError('name')" [attr.aria-describedby]="hasError('name') ? 'profile-name-error' : null" />
+            @if (hasError('name')) { <small id="profile-name-error" class="profile-form__error">{{ errorFor('name') }}</small> }
+          </label>
+          <label class="profile-form__field">
+            <span>Industry</span>
+            <input formControlName="industry" autocomplete="organization-title" [attr.aria-invalid]="hasError('industry')" [attr.aria-describedby]="hasError('industry') ? 'profile-industry-error' : null" />
+            @if (hasError('industry')) { <small id="profile-industry-error" class="profile-form__error">{{ errorFor('industry') }}</small> }
+          </label>
+        </div>
+      </section>
+
+      <section class="profile-form__section" aria-labelledby="contact-information-heading">
+        <div class="profile-form__section-heading">
+          <h4 id="contact-information-heading">Contact Information</h4>
+          <p>Optional contact details for your business.</p>
+        </div>
+        <div class="profile-form__grid">
+          <label class="profile-form__field">
+            <span>Email address</span>
+            <input formControlName="email" type="email" autocomplete="email" [attr.aria-invalid]="hasError('email')" [attr.aria-describedby]="hasError('email') ? 'profile-email-error' : null" />
+            @if (hasError('email')) { <small id="profile-email-error" class="profile-form__error">{{ errorFor('email') }}</small> }
+          </label>
+          <label class="profile-form__field">
+            <span>Phone number</span>
+            <input formControlName="phone" type="tel" autocomplete="tel" [attr.aria-invalid]="hasError('phone')" [attr.aria-describedby]="hasError('phone') ? 'profile-phone-error' : null" />
+            @if (hasError('phone')) { <small id="profile-phone-error" class="profile-form__error">{{ errorFor('phone') }}</small> }
+          </label>
+        </div>
+      </section>
+
+      <section class="profile-form__section" aria-labelledby="business-location-heading">
+        <div class="profile-form__section-heading">
+          <h4 id="business-location-heading">Location</h4>
+          <p>Where your business is based.</p>
+        </div>
+        <div class="profile-form__grid">
+          <label class="profile-form__field profile-form__field--wide">
+            <span>Location</span>
+            <input formControlName="location" autocomplete="address-level2" [attr.aria-invalid]="hasError('location')" [attr.aria-describedby]="hasError('location') ? 'profile-location-error' : null" />
+            @if (hasError('location')) { <small id="profile-location-error" class="profile-form__error">{{ errorFor('location') }}</small> }
+          </label>
+        </div>
+      </section>
+
+      <div class="profile-form__footer">
+        <p><b aria-hidden="true">*</b> Required field</p>
+        <button class="profile-button" type="submit" [disabled]="!canSave">
+          {{ saving() ? 'Saving…' : 'Save changes' }}
+        </button>
+      </div>
+    </form>
+
+    <div class="profile-note">
+      <span aria-hidden="true">✦</span>
+      <p>
+        <strong>Make your assistant more helpful</strong><br />Business hours and FAQs can be added
+        when those profile features are available.
+      </p>
+      <span aria-hidden="true">→</span>
+    </div>
+  </section>
+}

@@ -1,0 +1,77 @@
+.date-range-control {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.date-button:hover,
+.date-button[aria-expanded='true'] {
+  border-color: #cddbd5;
+  background: #fbfdfc;
+}
+
+.date-button .date-button__chevron {
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-left: 0.1rem;
+  color: #8f9aac;
+  transition: transform 150ms ease;
+}
+
+.date-button .date-button__chevron--open {
+  transform: rotate(180deg);
+}
+
+.date-range-menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  min-width: 100%;
+  padding: 0.3rem;
+  border: 1px solid #e5eaf1;
+  border-radius: 0.65rem;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(37, 49, 73, 0.14);
+}
+
+.date-range-menu__option {
+  display: flex;
+  width: 100%;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.65rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: #56647b;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.68rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.date-range-menu__option:hover,
+.date-range-menu__option:focus-visible,
+.date-range-menu__option--selected {
+  background: #f2f7f4;
+  color: #176b58;
+}
+
+.date-range-menu__option svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+@media (max-width: 560px) {
+  .date-range-control {
+    align-self: flex-start;
+  }
+}

@@ -1,0 +1,101 @@
+<aside class="sidebar" aria-label="Primary navigation">
+  <a class="brand" href="#main-content" aria-label="BizPilot AI dashboard">
+    <span class="brand__mark" aria-hidden="true">
+      <svg viewBox="0 0 36 36" fill="none">
+        <path d="M7 24.5V12.2l11-6.4 11 6.4v12.3l-11 6.3-11-6.3Z" />
+        <path d="m12 21 4 3 8-10" />
+      </svg>
+    </span>
+    <span class="brand__text">BizPilot <span>AI</span></span>
+  </a>
+
+  <div class="workspace-switcher-container">
+    <button
+      class="workspace-switcher"
+      type="button"
+      aria-label="Select business"
+      aria-haspopup="menu"
+      [attr.aria-expanded]="businessMenuOpen()"
+      (click)="toggleBusinessMenu()"
+    >
+      <span class="workspace-switcher__avatar" aria-hidden="true">U</span>
+      <span class="workspace-switcher__details">
+        <span class="workspace-switcher__name">UrbanNest Interiors</span>
+        <span class="workspace-switcher__plan">Growth plan</span>
+      </span>
+      <span
+        class="workspace-switcher__chevron"
+        [class.workspace-switcher__chevron--open]="businessMenuOpen()"
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </span>
+    </button>
+    @if (businessMenuOpen()) {
+      <div class="workspace-menu" role="menu" aria-label="Business options">
+        <button
+          class="workspace-menu__item workspace-menu__item--current"
+          type="button"
+          role="menuitemradio"
+          aria-checked="true"
+          (click)="openCurrentBusiness()"
+        >
+          <span>UrbanNest Interiors</span>
+          <span class="workspace-menu__current">Current business</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m5 12 4 4L19 6" />
+          </svg>
+        </button>
+        <button class="workspace-menu__item" type="button" role="menuitem" (click)="openBusinessProfile()">
+          Business Profile
+        </button>
+      </div>
+    }
+  </div>
+
+  <nav class="navigation">
+    @for (section of sections; track section.label) {
+      <div class="navigation__section">
+        <p class="navigation__heading">{{ section.label }}</p>
+        @for (item of section.items; track item.label) {
+          <button
+            class="navigation__item"
+            type="button"
+            [class.navigation__item--active]="activePage() === item.label"
+            [attr.aria-current]="activePage() === item.label ? 'page' : null"
+            (click)="selectPage(item.label)"
+          >
+            <svg class="navigation__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path [attr.d]="item.icon" />
+            </svg>
+            <span>{{ item.label }}</span>
+            @if (item.badge) {
+              <span class="navigation__badge">{{ item.badge }}</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </nav>
+
+  <div class="sidebar__footer">
+    <div class="help-card">
+      <span class="help-card__icon" aria-hidden="true">?</span>
+      <div>
+        <p>Need a hand?</p>
+        <span>Visit our help centre</span>
+      </div>
+      <span class="help-card__arrow" aria-hidden="true">↗</span>
+    </div>
+    <div class="account">
+      <span class="account__avatar" aria-hidden="true">AS</span>
+      <span class="account__details">
+        <span class="account__name">Ananya Sharma</span>
+        <span class="account__email">ananya@urbannest.in</span>
+      </span>
+      <button class="account__more" type="button" aria-label="Account options">···</button>
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,190 @@
+<section class="page-intro">
+  <div>
+    <p class="eyebrow">YOUR BUSINESS, ON AUTOPILOT</p>
+    <h2>AI Assistant</h2>
+    <p>Ask about your leads, customer enquiries, and business profile.</p>
+  </div>
+  <span class="assistant-mode-badge"><span aria-hidden="true"></span> Powered by your business data + AI</span>
+</section>
+
+<section class="follow-up-card" aria-labelledby="follow-up-title">
+  <header class="follow-up-card__header">
+    <div>
+      <p class="eyebrow">LEAD MANAGEMENT</p>
+      <h3 id="follow-up-title">Lead Follow-up Assistant</h3>
+      <p>Find leads that may need a timely, personal follow-up.</p>
+    </div>
+    <button
+      class="follow-up-primary-button"
+      type="button"
+      [disabled]="followUpLoading()"
+      (click)="findLeadsToFollowUp()"
+    >
+      @if (followUpLoading()) { Finding leads… }
+      @else { Find leads to follow up }
+    </button>
+  </header>
+
+  @if (followUpLoading()) {
+    <p class="follow-up-status" role="status">Loading leads…</p>
+  } @else if (followUpError(); as message) {
+    <div class="follow-up-error" role="alert">
+      <p>{{ message }}</p>
+      <button type="button" (click)="findLeadsToFollowUp()">Retry</button>
+    </div>
+  } @else if (followUpLoaded() && followUpCandidates().length === 0) {
+    <p class="follow-up-empty" role="status">No leads need follow-up right now.</p>
+  } @else if (followUpCandidates().length > 0) {
+    <div class="follow-up-list">
+      @for (candidate of followUpCandidates(); track candidate.lead.id) {
+        <article class="follow-up-lead">
+          <div class="follow-up-lead__heading">
+            <div>
+              <h4>{{ candidate.lead.customer?.name || 'Customer information unavailable.' }}</h4>
+              <p>{{ candidate.lead.service }}</p>
+            </div>
+            <span class="follow-up-status-badge">{{ candidate.lead.status }}</span>
+          </div>
+          <p class="follow-up-lead__meta">{{ candidate.lead.source }}</p>
+          @if (candidate.lead.message) {
+            <p class="follow-up-lead__message">{{ candidate.lead.message }}</p>
+          }
+          <p class="follow-up-reason"><strong>Reason:</strong> {{ candidate.reason }}</p>
+
+          @if (followUpDraftLeadId() === candidate.lead.id) {
+            <div class="follow-up-draft">
+              <label [for]="'follow-up-draft-' + candidate.lead.id">Draft follow-up message</label>
+              <textarea
+                [id]="'follow-up-draft-' + candidate.lead.id"
+                rows="4"
+                [value]="followUpDraft()"
+                (input)="updateFollowUpDraft($event)"
+              ></textarea>
+              <div class="follow-up-draft__actions">
+                <button type="button" (click)="copyFollowUpDraft()">
+                  {{ followUpCopied() ? 'Copied' : 'Copy message' }}
+                </button>
+                <button
+                  type="button"
+                  [disabled]="!whatsAppPhone(candidate.lead.customer?.phone)"
+                  (click)="sendFollowUpViaWhatsApp(candidate.lead.customer?.phone)"
+                >
+                  Send via WhatsApp
+                </button>
+                <button class="follow-up-secondary-button" type="button" (click)="cancelFollowUpDraft()">
+                  Clear / cancel
+                </button>
+              </div>
+              @if (!whatsAppPhone(candidate.lead.customer?.phone)) {
+                <p class="follow-up-copy-error">No valid phone number available for this lead.</p>
+              }
+              @if (followUpCopyError(); as copyError) {
+                <p class="follow-up-copy-error" role="alert">{{ copyError }}</p>
+              }
+            </div>
+          } @else {
+            <button
+              class="follow-up-draft-button"
+              type="button"
+              (click)="draftFollowUpMessage(candidate)"
+            >
+              Draft follow-up message
+            </button>
+          }
+        </article>
+      }
+    </div>
+  }
+</section>
+
+<section class="assistant-workspace" aria-label="BizPilot AI Assistant chat">
+  <div class="assistant-workspace__header">
+    <span class="assistant-logo" aria-hidden="true">✦</span>
+    <div>
+      <h3>BizPilot Assistant</h3>
+      <p>Grounded in your current business data</p>
+    </div>
+  </div>
+
+  <div class="assistant-chat" aria-live="polite" aria-relevant="additions text">
+    @if (messages().length === 0) {
+      <div class="assistant-welcome">
+        <span class="assistant-welcome__sparkle" aria-hidden="true">✦</span>
+        <h3>What would you like to know?</h3>
+        <p>I can look up current lead and enquiry information for your business.</p>
+      </div>
+    }
+
+    @for (message of messages(); track trackMessage($index, message)) {
+      <article [class]="'chat-message chat-message--' + message.role">
+        <span class="chat-avatar" [class.chat-avatar--ai]="message.role === 'assistant'" aria-hidden="true">
+          {{ message.role === 'assistant' ? '✦' : 'You' }}
+        </span>
+        <div class="chat-message__body">
+          <p class="chat-message__label">{{ message.role === 'user' ? 'You' : 'BizPilot Assistant' }}</p>
+          <p class="chat-message__content">{{ message.content }}</p>
+          @if (message.data?.type === 'recent-enquiries') {
+            <div class="assistant-data-list">
+              @for (enquiry of recentEnquiries(message.data); track enquiry.id) {
+                <div class="assistant-data-list__item">
+                  <strong>{{ enquiry.customer.name }}</strong>
+                  <span>{{ enquiry.message }}</span>
+                  <small>{{ enquiry.source }} · {{ enquiry.createdAt | date:'d MMM y' }}</small>
+                </div>
+              } @empty {
+                <p class="assistant-data-list__empty">No recent enquiries to show.</p>
+              }
+            </div>
+          }
+        </div>
+      </article>
+    }
+
+    @if (loading()) {
+      <article class="chat-message chat-message--assistant" role="status">
+        <span class="chat-avatar chat-avatar--ai" aria-hidden="true">✦</span>
+        <div class="chat-message__body">
+          <p class="chat-message__label">BizPilot Assistant</p>
+          <p class="assistant-thinking"><span></span><span></span><span></span> Checking your business data…</p>
+        </div>
+      </article>
+    }
+  </div>
+
+  @if (errorMessage(); as message) {
+    <div class="assistant-error" role="alert">
+      <p>{{ message }}</p>
+      <button type="button" (click)="retry()" [disabled]="loading()">Retry</button>
+    </div>
+  }
+
+  <div class="assistant-composer-area">
+    @if (messages().length === 0) {
+      <div class="assistant-suggestions">
+        <span>Try asking</span>
+        @for (question of suggestions; track question) {
+          <button type="button" [disabled]="loading()" (click)="askSuggestion(question)">{{ question }}</button>
+        }
+      </div>
+    }
+    <form class="assistant-composer" (submit)="submitMessage($event)">
+      <label class="visually-hidden" for="assistant-question">Ask BizPilot Assistant</label>
+      <textarea
+        #messageInput
+        id="assistant-question"
+        rows="1"
+        maxlength="2000"
+        [value]="draft()"
+        [disabled]="loading()"
+        placeholder="Ask about your leads or enquiries…"
+        (input)="updateDraft($event)"
+        (keydown.enter)="sendOnEnter($event)"
+      ></textarea>
+      <button type="submit" [disabled]="loading() || !draft().trim()" aria-label="Send message">
+        @if (loading()) { <span class="assistant-send-spinner" aria-hidden="true"></span> }
+        @else { <span aria-hidden="true">↑</span> }
+      </button>
+    </form>
+    <p class="assistant-disclaimer">Gemini answers using the business context supplied with your question.</p>
+  </div>
+</section>

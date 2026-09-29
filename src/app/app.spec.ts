@@ -1,21 +1,88 @@
 import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { App } from './app';
+import { APP_PAGES } from './app.types';
+import { DashboardApiService } from './services/dashboard-api.service';
+import { DashboardResponse } from './services/dashboard-api.types';
+import { BusinessProfileApiService } from './services/business-profile-api.service';
+import { AiAssistantApiService } from './services/ai-assistant-api.service';
+import { EnquiriesApiService } from './services/enquiries-api.service';
+import { LeadsApiService } from './services/leads-api.service';
+import { BusinessProfile } from './services/business-profile-api.types';
 import {
   BUSINESS_PROFILES,
-  BUSINESS_PROFILE,
   BUSINESS_TYPE_LABELS,
   BUSINESS_TYPES,
-  ACTIVE_BUSINESS_TYPE,
-  ACTIVE_BUSINESS_TYPE_TOKEN,
   DEMO_SETTINGS,
   WEBSITE_PACKAGES,
   WHATSAPP_CONFIG,
 } from './site-profile';
 
+const DASHBOARD_RESPONSE: DashboardResponse = {
+  businessId: 'bizpilot-demo-urbannest',
+  totalLeads: 5,
+  newEnquiries: 1,
+  contactedLeads: 1,
+  convertedLeads: 1,
+  recentEnquiries: [
+    {
+      id: 'enquiry-1',
+      message: 'Looking for a home interior consultation.',
+      source: 'WEBSITE',
+      status: 'NEW',
+      createdAt: '2026-09-29T10:42:00.000Z',
+      customer: { id: 'customer-1', name: 'Rohan Kapoor', email: 'rohan@example.com' },
+    },
+  ],
+  leadPipeline: { NEW: 1, CONTACTED: 1, QUALIFIED: 1, CONVERTED: 1, LOST: 1 },
+};
+
+const DEMO_PROFILE: BusinessProfile = {
+  id: 'bizpilot-demo-urbannest',
+  name: 'UrbanNest Interiors',
+  email: 'hello@urbannest.in',
+  phone: null,
+  industry: 'Interior Design',
+  location: null,
+  createdAt: '2026-09-29T10:00:00.000Z',
+  updatedAt: '2026-09-29T10:00:00.000Z',
+};
+
 describe('App', () => {
+  const profileApi = { getProfile: vi.fn(), updateProfile: vi.fn() };
+
   beforeEach(async () => {
+    window.sessionStorage.setItem('bizpilot-demo-onboarding-completed', 'true');
+    profileApi.getProfile.mockReset();
+    profileApi.updateProfile.mockReset().mockReturnValue(of(DEMO_PROFILE));
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [
+        {
+          provide: DashboardApiService,
+          useValue: { getDashboard: vi.fn().mockReturnValue(of(DASHBOARD_RESPONSE)) },
+        },
+        {
+          provide: LeadsApiService,
+          useValue: { getLeads: vi.fn().mockReturnValue(of([])) },
+        },
+        {
+          provide: EnquiriesApiService,
+          useValue: {
+            getEnquiries: vi.fn().mockReturnValue(of([])),
+            createEnquiry: vi.fn(),
+            updateEnquiry: vi.fn(),
+          },
+        },
+        {
+          provide: BusinessProfileApiService,
+          useValue: profileApi,
+        },
+        {
+          provide: AiAssistantApiService,
+          useValue: { sendMessage: vi.fn() },
+        },
+      ],
     }).compileComponents();
   });
 
@@ -25,94 +92,221 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('renders the active UrbanNest Interiors profile across the site sections', async () => {
+  it('shows onboarding only until it is completed or skipped during the session', async () => {
+    window.sessionStorage.removeItem('bizpilot-demo-onboarding-completed');
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const profile = BUSINESS_PROFILES.professionalServices;
-    expect(ACTIVE_BUSINESS_TYPE).toBe('professionalServices');
-    expect(compiled.querySelector('h1')?.textContent).toContain('Interiors shaped');
-    expect(compiled.querySelector('.hero__description')?.textContent).toContain('Plan a home that feels considered and comfortable');
-    const heroImage = compiled.querySelector('.hero__visual img');
-    const aboutImage = compiled.querySelector('.about__visual img');
-    expect(heroImage?.getAttribute('src')).toBe('/assets/images/urbannest-hero-placeholder.svg');
-    expect(heroImage?.getAttribute('alt')).toContain('Illustration of a warm, contemporary living room');
-    expect(heroImage?.getAttribute('loading')).toBe('eager');
-    expect(heroImage?.getAttribute('fetchpriority')).toBe('high');
-    expect(aboutImage?.getAttribute('src')).toBe('/assets/images/urbannest-about-placeholder.svg');
-    expect(aboutImage?.getAttribute('alt')).toContain('Illustration of an interior design workspace');
-    expect(aboutImage?.getAttribute('loading')).toBe('lazy');
-    expect(compiled.querySelectorAll('.service-card h3')).toHaveLength(6);
-    expect(Array.from(compiled.querySelectorAll('.service-card h3'), (heading) => heading.textContent?.trim())).toEqual([
-      'Interior design consultation',
-      'Space planning',
-      'Residential interiors',
-      'Kitchen & wardrobe design',
-      'Materials & finishes',
-      'Styling & decor',
-    ]);
-    expect(compiled.querySelectorAll('.package-card')).toHaveLength(3);
-    expect(compiled.querySelectorAll('.package-card__cta[href="#contact"]')).toHaveLength(3);
-    expect(compiled.querySelector('.package-card[aria-labelledby="package-starter"]')?.textContent).toContain('1–3 pages');
-    expect(compiled.querySelector('.package-card[aria-labelledby="package-business"]')?.textContent).toContain('WhatsApp / contact CTA');
-    expect(compiled.querySelector('.package-card[aria-labelledby="package-custom"]')?.textContent).toContain('API integration when required');
-    expect(compiled.textContent).toContain('UrbanNest Interiors');
-    expect(compiled.querySelector('.brand__primary')?.textContent?.trim()).toBe('UrbanNest');
-    expect(compiled.querySelector('.brand__descriptor')?.textContent?.trim()).toBe('Interiors');
-    expect(compiled.querySelector('.brand')?.getAttribute('aria-label')).toBe('UrbanNest Interiors home');
-    expect(compiled.querySelector('.nav__contact')?.textContent).toContain('Discuss your space');
-    expect(compiled.querySelector('.hero__actions .button')?.textContent).toContain('Discuss your space');
-    expect(compiled.querySelector('.contact__details a[href="mailto:hello@urbannestinteriors.example"]')?.textContent).toContain('hello@urbannestinteriors.example');
-    expect(compiled.querySelector('.contact__details a[href="tel:+919000000032"]')?.textContent).toContain('+91 90000 00032');
-    expect(profile.whatsappNumber).toBe('919000000032');
-    expect(profile.phone).toBe('+91 90000 00032');
-    const expectedWhatsAppUrl = `https://wa.me/919000000032?text=${encodeURIComponent(WHATSAPP_CONFIG.whatsappMessage)}`;
-    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('href')).toBe(expectedWhatsAppUrl);
-    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('aria-label')).toBe('Chat with UrbanNest Interiors on WhatsApp');
-    expect(compiled.querySelector('.contact__whatsapp')?.textContent).not.toContain('Demo WhatsApp number');
-    expect(compiled.querySelector('.contact__availability')).toBeNull();
-    expect(compiled.querySelector('.footer__bottom')?.textContent).not.toContain('sample contact details');
-    expect(compiled.textContent).not.toContain('Browse a sample');
-    expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('href')).toBe(expectedWhatsAppUrl);
-    expect(compiled.querySelector('app-whatsapp-float .whatsapp-float')?.getAttribute('aria-label')).toBe('Chat with UrbanNest Interiors on WhatsApp');
-    expect(compiled.querySelector('.contact__address')?.textContent).toContain('Salem, Tamil Nadu');
-    expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe('Contact UrbanNest Interiors');
-    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain('Beautiful spaces. Thoughtfully designed.');
-    expect(compiled.querySelector('.footer__bottom')?.textContent).toContain('UrbanNest Interiors');
-    expect(compiled.querySelector('.footer__links a[href="mailto:hello@urbannestinteriors.example"]')).not.toBeNull();
-    expect(compiled.querySelector('.footer__links a[href="tel:+919000000032"]')?.textContent).toContain('+91 90000 00032');
-    expect(compiled.querySelector('.footer__links')?.textContent).toContain('Salem, Tamil Nadu');
-    expect(document.title).toBe(profile.pageTitle);
-    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toBe(profile.pageDescription);
-    expect(compiled.querySelectorAll('.outcome-card')).toHaveLength(3);
-    expect(compiled.querySelectorAll('.contact__form option')).toHaveLength(8);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector('app-business-onboarding')).not.toBeNull();
+    expect(element.querySelector('app-dashboard')).toBeNull();
+    element.querySelector<HTMLButtonElement>('.onboarding-skip')!.click();
+    fixture.detectChanges();
+    expect(element.querySelector('app-business-onboarding')).toBeNull();
+    expect(element.querySelector('app-dashboard')).not.toBeNull();
+    expect(window.sessionStorage.getItem('bizpilot-demo-onboarding-completed')).toBe('true');
+
+    fixture.destroy();
+    const nextApp = TestBed.createComponent(App);
+    await nextApp.whenStable();
+    nextApp.detectChanges();
+    expect((nextApp.nativeElement as HTMLElement).querySelector('app-business-onboarding')).toBeNull();
+
+    window.sessionStorage.removeItem('bizpilot-demo-onboarding-completed');
   });
 
-  it('renders a different selected profile throughout the site', async () => {
-    const profile = BUSINESS_PROFILES.restaurantCafe;
-    TestBed.overrideProvider(ACTIVE_BUSINESS_TYPE_TOKEN, { useValue: 'restaurantCafe' });
+  it('shows onboarding when the session completion flag is absent', async () => {
+    window.sessionStorage.removeItem('bizpilot-demo-onboarding-completed');
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
 
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('app-business-onboarding')).not.toBeNull();
+    expect(element.querySelector('app-dashboard')).toBeNull();
+    fixture.destroy();
+    window.sessionStorage.removeItem('bizpilot-demo-onboarding-completed');
+  });
+
+  it('does not show onboarding when the session completion flag is true', async () => {
+    window.sessionStorage.setItem('bizpilot-demo-onboarding-completed', 'true');
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('app-business-onboarding')).toBeNull();
+    expect(element.querySelector('app-dashboard')).not.toBeNull();
+    fixture.destroy();
+    window.sessionStorage.removeItem('bizpilot-demo-onboarding-completed');
+  });
+
+  it('stores completion immediately after creating the workspace and respects it after refresh', async () => {
+    window.sessionStorage.removeItem('bizpilot-demo-onboarding-completed');
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const setField = (field: string, value: string): void => {
+      const input = element.querySelector<HTMLInputElement>(`[formControlName="${field}"]`)!;
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    };
+
+    setField('name', 'UrbanNest Interiors');
+    setField('industry', 'Interior Design');
+    setField('email', 'hello@urbannest.in');
+    element.querySelector<HTMLFormElement>('form')!.dispatchEvent(
+      new Event('submit', { bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(profileApi.updateProfile).toHaveBeenCalledOnce();
+    expect(element.textContent).toContain('Your business workspace is ready.');
+    expect(window.sessionStorage.getItem('bizpilot-demo-onboarding-completed')).toBe('true');
+
+    fixture.destroy();
+    const refreshedApp = TestBed.createComponent(App);
+    await refreshedApp.whenStable();
+    refreshedApp.detectChanges();
+    expect((refreshedApp.nativeElement as HTMLElement).querySelector('app-business-onboarding'))
+      .toBeNull();
+    expect((refreshedApp.nativeElement as HTMLElement).querySelector('app-dashboard')).not.toBeNull();
+    refreshedApp.destroy();
+    window.sessionStorage.removeItem('bizpilot-demo-onboarding-completed');
+  });
+
+  it('renders the BizPilot dashboard and its main overview sections', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.brand__text')?.textContent).toContain('BizPilot');
+    expect(compiled.querySelectorAll('app-stat-card')).toHaveLength(4);
+    expect(compiled.textContent).toContain('Total leads');
+    expect(compiled.textContent).toContain('New enquiries');
+    expect(compiled.textContent).toContain('Contacted leads');
+    expect(compiled.textContent).toContain('Converted leads');
+    expect(compiled.textContent).toContain('Recent enquiries');
+    expect(compiled.textContent).toContain('Recent activity');
+    expect(compiled.textContent).toContain('Rohan Kapoor');
+    expect(compiled.textContent).toContain('Looking for a home interior consultation.');
+    expect(compiled.querySelectorAll('.pipeline__stage')).toHaveLength(5);
+    expect(compiled.querySelector('.pipeline__stage:last-child strong')?.textContent).toBe('1');
+    expect(compiled.querySelectorAll('.navigation__item')).toHaveLength(APP_PAGES.length);
+    expect(document.title).toBe('BizPilot AI | Lead management');
+    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toContain(
+      'BizPilot AI',
+    );
+  });
 
-    expect(profile.name).not.toBe(BUSINESS_PROFILES[ACTIVE_BUSINESS_TYPE].name);
-    expect(compiled.querySelector('.brand__primary')?.textContent).toContain(profile.brandWordmark.primary);
-    expect(compiled.querySelector('.brand__descriptor')?.textContent).toContain(profile.brandWordmark.accent);
-    expect(compiled.querySelector('.footer__brand p')?.textContent).toContain(profile.tagline);
-    expect(compiled.querySelector('h1')?.textContent).toContain(profile.hero.headingLead);
-    expect(compiled.querySelector('.hero__description')?.textContent).toContain(profile.hero.subheading);
-    expect(compiled.querySelector('.service-card h3')?.textContent).toBe(profile.services.items[0].name);
-    expect(compiled.querySelector('#about-title')?.textContent).toContain(profile.about.headingLead);
-    expect(compiled.querySelector('#why-title')?.textContent).toContain(profile.why.headingLead);
-    expect(compiled.querySelector('#process-title')?.textContent).toContain(profile.process.headingLead);
-    expect(compiled.querySelector('.nav__contact')?.textContent).toContain(profile.navigation.contactCta);
-    expect(compiled.querySelector('.contact__form')?.getAttribute('aria-label')).toBe(profile.contact.formLabel);
-    expect(compiled.querySelector('#contact-title')?.textContent).toContain(profile.contact.headingLead);
-    expect(document.title).toBe(profile.pageTitle);
-    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toBe(profile.pageDescription);
-    expect(compiled.querySelectorAll('.package-card')).toHaveLength(WEBSITE_PACKAGES.length);
-    expect(compiled.querySelector('.contact__whatsapp-link')?.getAttribute('href')).toBe(profile.whatsappUrl);
+  it('shows all requested sections when selected in the sidebar', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const leadsLink = Array.from(
+      compiled.querySelectorAll<HTMLButtonElement>('.navigation__item'),
+    ).find((item) => item.textContent?.includes('Leads'));
+    const aiLink = Array.from(
+      compiled.querySelectorAll<HTMLButtonElement>('.navigation__item'),
+    ).find((item) => item.textContent?.includes('AI Assistant'));
+    leadsLink?.click();
+    fixture.detectChanges();
+    expect(compiled.querySelector('app-topbar h1')?.textContent).toContain('Leads');
+    aiLink?.click();
+    fixture.detectChanges();
+    expect(compiled.querySelector('app-topbar h1')?.textContent).toContain('AI Assistant');
+    expect(compiled.textContent).toContain('What would you like to know?');
+  });
+
+  it('opens the existing Lead Details view from Needs Attention', async () => {
+    const selectedLead = {
+      id: 'lead-attention',
+      businessId: 'bizpilot-demo-urbannest',
+      customerId: 'customer-attention',
+      service: 'Kitchen design',
+      source: 'WHATSAPP' as const,
+      status: 'NEW' as const,
+      message: 'Interested in a kitchen refresh.',
+      createdAt: '2026-09-29T10:00:00.000Z',
+      updatedAt: '2026-09-29T10:00:00.000Z',
+      customer: {
+        id: 'customer-attention',
+        name: 'Asha Rao',
+        email: 'asha@example.com',
+        phone: '9876543210',
+      },
+    };
+    vi.spyOn(TestBed.inject(LeadsApiService), 'getLeads').mockReturnValue(of([selectedLead]));
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    compiled.querySelector<HTMLButtonElement>('.attention-item__action')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(compiled.querySelector('app-topbar h1')?.textContent).toContain('Leads');
+    expect(compiled.querySelector('[role="dialog"]')?.textContent).toContain('Asha Rao');
+    expect(compiled.querySelector('[role="dialog"]')?.textContent).toContain('Kitchen design');
+  });
+
+  it('opens the existing Add Lead dialog from the dashboard Quick Action', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    Array.from(compiled.querySelectorAll<HTMLButtonElement>('.quick-action'))
+      .find((button) => button.textContent?.includes('+ Add Lead'))!
+      .click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(compiled.querySelector('app-topbar h1')?.textContent).toContain('Leads');
+    expect(compiled.querySelector('#create-lead-title')?.textContent).toContain('Add a lead');
+  });
+
+  it('opens the existing Add Enquiry dialog from the dashboard Quick Action', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    Array.from(compiled.querySelectorAll<HTMLButtonElement>('.quick-action'))
+      .find((button) => button.textContent?.includes('+ Add Enquiry'))!
+      .click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(compiled.querySelector('app-topbar h1')?.textContent).toContain('Customer Enquiries');
+    expect(compiled.querySelector('#create-enquiry-title')?.textContent).toContain('Add an enquiry');
+  });
+
+  it.each([
+    ['View Leads', 'Leads'],
+    ['View Enquiries', 'Customer Enquiries'],
+    ['AI Assistant', 'AI Assistant'],
+  ])('navigates using the %s Quick Action', async (label, expectedPage) => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    Array.from(compiled.querySelectorAll<HTMLButtonElement>('.quick-action'))
+      .find((button) => button.textContent?.includes(label))!
+      .click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(compiled.querySelector('app-topbar h1')?.textContent).toContain(expectedPage);
   });
 
   it('provides complete customizable profiles for all six business types', () => {
@@ -129,22 +323,28 @@ describe('App', () => {
       expect(profile.pageTitle).toBeTruthy();
       expect(profile.pageDescription).toBeTruthy();
       expect(profile.navigation.contactCta).toBeTruthy();
-      expect(profile.hero).toEqual(expect.objectContaining({
-        eyebrow: expect.any(String),
-        headingLead: expect.any(String),
-        headingSecondLine: expect.any(String),
-        headingEmphasis: expect.any(String),
-        subheading: expect.any(String),
-        contactCta: expect.any(String),
-        imageUrl: expect.any(String),
-        imageAlt: expect.any(String),
-      }));
+      expect(profile.hero).toEqual(
+        expect.objectContaining({
+          eyebrow: expect.any(String),
+          headingLead: expect.any(String),
+          headingSecondLine: expect.any(String),
+          headingEmphasis: expect.any(String),
+          subheading: expect.any(String),
+          contactCta: expect.any(String),
+          imageUrl: expect.any(String),
+          imageAlt: expect.any(String),
+        }),
+      );
       expect(profile.hero.headingLead).toBeTruthy();
       expect(profile.services.items).toHaveLength(6);
       expect(profile.services.eyebrow).toBeTruthy();
       expect(profile.services.headingLead).toBeTruthy();
       expect(profile.services.intro).toBeTruthy();
-      expect(profile.services.items.every((service) => service.name && service.description && service.symbol)).toBe(true);
+      expect(
+        profile.services.items.every(
+          (service) => service.name && service.description && service.symbol,
+        ),
+      ).toBe(true);
       expect(profile.about.values.length).toBeGreaterThan(0);
       expect(profile.about.headingLead).toBeTruthy();
       expect(profile.about.intro).toBeTruthy();
@@ -154,7 +354,9 @@ describe('App', () => {
       expect(profile.why.principles.length).toBeGreaterThan(0);
       expect(profile.why.headingLead).toBeTruthy();
       expect(profile.why.intro).toBeTruthy();
-      expect(profile.why.principles.every((principle) => principle.title && principle.description)).toBe(true);
+      expect(
+        profile.why.principles.every((principle) => principle.title && principle.description),
+      ).toBe(true);
       expect(profile.process.steps).toHaveLength(3);
       expect(profile.process.headingLead).toBeTruthy();
       expect(profile.process.intro).toBeTruthy();
@@ -165,7 +367,9 @@ describe('App', () => {
       expect(profile.contact.servicePrompt).toBeTruthy();
       expect(profile.contact.projectPrompt).toBeTruthy();
       expect(profile.packages).toBe(WEBSITE_PACKAGES);
-      expect(profile.whatsappNumber).toBe(type === 'professionalServices' ? '919000000032' : WHATSAPP_CONFIG.whatsappNumber);
+      expect(profile.whatsappNumber).toBe(
+        type === 'professionalServices' ? '919000000032' : WHATSAPP_CONFIG.whatsappNumber,
+      );
       expect(profile.whatsappMessage).toBe(WHATSAPP_CONFIG.whatsappMessage);
       expect(profile.enableWhatsapp).toBe(WHATSAPP_CONFIG.enableWhatsapp);
       expect(profile.whatsappUrl).toContain(encodeURIComponent(profile.whatsappMessage));

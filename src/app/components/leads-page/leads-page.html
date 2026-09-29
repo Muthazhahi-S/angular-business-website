@@ -1,0 +1,399 @@
+<section class="page-intro">
+  <div>
+    <p class="eyebrow">YOUR PIPELINE</p>
+    <h2>Leads</h2>
+    <p>Keep every opportunity moving forward.</p>
+  </div>
+  <button class="create-lead-button" type="button" (click)="openCreateDialog()">
+    <span aria-hidden="true">+</span> Add lead
+  </button>
+</section>
+
+<section class="workspace-card leads-card" aria-label="Lead management">
+  <div class="workspace-card__heading leads-toolbar">
+    <div>
+      <h3>All leads</h3>
+      <p>{{ filteredLeads().length }} leads shown</p>
+    </div>
+    <div class="lead-filters">
+      <label>
+        <span class="visually-hidden">Filter leads by status</span>
+        <select [value]="statusFilter()" (change)="setStatusFilter($event)">
+          <option value="">All statuses</option>
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ formatEnumLabel(status) }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span class="visually-hidden">Filter leads by source</span>
+        <select [value]="sourceFilter()" (change)="setSourceFilter($event)">
+          <option value="">All sources</option>
+          @for (source of sources; track source) {
+            <option [value]="source">{{ formatEnumLabel(source) }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  </div>
+
+  @if (actionError()) {
+    <p class="inline-error" role="alert">{{ actionError() }}</p>
+  }
+
+  @if (loading()) {
+    <div class="leads-state" role="status" aria-live="polite">
+      <span class="leads-state__spinner" aria-hidden="true"></span>
+      <div>
+        <h3>Loading leads</h3>
+        <p>Fetching your latest opportunities.</p>
+      </div>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="leads-state leads-state--error" role="alert">
+      <span class="leads-state__error-icon" aria-hidden="true">!</span>
+      <div>
+        <h3>We couldn’t load your leads</h3>
+        <p>{{ message }}</p>
+      </div>
+      <button class="retry-button" type="button" (click)="loadLeads()">Try again</button>
+    </div>
+  } @else if (filteredLeads().length === 0) {
+    <div class="leads-state leads-state--empty">
+      <span class="leads-state__empty-icon" aria-hidden="true">↗</span>
+      <div>
+        <h3>{{ leads().length ? 'No matching leads' : 'No leads yet' }}</h3>
+        <p>
+          {{
+            leads().length
+              ? 'Try changing your search or filters.'
+              : 'Add your first lead to start building your pipeline.'
+          }}
+        </p>
+      </div>
+      @if (leads().length === 0) {
+        <button class="retry-button" type="button" (click)="openCreateDialog()">Add a lead</button>
+      }
+    </div>
+  } @else {
+    <div class="leads-table-scroll">
+      <table class="leads-table">
+        <thead>
+          <tr>
+            <th scope="col">CUSTOMER</th>
+            <th scope="col">LEAD DETAILS</th>
+            <th scope="col">SOURCE</th>
+            <th scope="col">CREATED</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (lead of filteredLeads(); track trackLead($index, lead)) {
+            <tr>
+              <td>
+                <span class="lead-customer">
+                  @if (lead.customer; as customer) {
+                    <span class="lead-avatar" aria-hidden="true">{{ customer.name.slice(0, 1) }}</span>
+                    <span>
+                      <strong>{{ customer.name }}</strong>
+                      <small>{{ customer.email || customer.phone || 'No contact details' }}</small>
+                    </span>
+                  } @else {
+                    <span class="lead-avatar" aria-hidden="true">?</span>
+                    <span><strong>Customer information unavailable.</strong></span>
+                  }
+                </span>
+              </td>
+              <td class="lead-details">
+                <strong>{{ lead.service }}</strong>
+                @if (lead.message) {
+                  <small>{{ lead.message }}</small>
+                }
+              </td>
+              <td>{{ formatEnumLabel(lead.source) }}</td>
+              <td>{{ lead.createdAt | date: 'd MMM y, h:mm a' }}</td>
+              <td>
+                <label class="status-control">
+                  <span class="visually-hidden"
+                    >Status for {{ lead.service }} lead from {{ lead.customer?.name || 'unknown customer' }}</span
+                  >
+                  <select
+                    [class]="'status-select status-select--' + statusClass(lead.status)"
+                    [ngModel]="lead.status"
+                    [ngModelOptions]="{ standalone: true }"
+                    [disabled]="updatingLeadIds().has(lead.id)"
+                    #statusControl
+                    (ngModelChange)="updateLeadStatus(lead, $event, statusControl)"
+                  >
+                    @for (status of statuses; track status) {
+                      <option [value]="status">{{ formatEnumLabel(status) }}</option>
+                    }
+                  </select>
+                </label>
+              </td>
+              <td>
+                <button class="lead-view-button" type="button" (click)="openDetails(lead)">
+                  View details
+                </button>
+              </td>
+            </tr>
+          }
+
+          @if (detailsLead(); as lead) {
+            <div class="lead-details-backdrop" (click)="closeDetails()">
+              <section
+                class="lead-details-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="lead-details-title"
+                (click)="$event.stopPropagation()"
+              >
+                <header class="lead-details-dialog__header">
+                  <div>
+                    <p class="eyebrow">LEAD RECORD</p>
+                    <h2 id="lead-details-title">Lead details</h2>
+                  </div>
+                  <button
+                    type="button"
+                    class="lead-details-dialog__close"
+                    aria-label="Close lead details"
+                    [disabled]="detailsSaving()"
+                    (click)="closeDetails()"
+                  >
+                    ×
+                  </button>
+                </header>
+
+                <div class="lead-details-dialog__body">
+                  @if (customerInformationAvailable(lead)) {
+                    <section class="lead-details-section" aria-label="Customer information">
+                      <h3>Customer</h3>
+                      <dl>
+                        <div><dt>Name</dt><dd>{{ lead.customer?.name || 'Not provided' }}</dd></div>
+                        <div><dt>Email</dt><dd>{{ lead.customer?.email || 'Not provided' }}</dd></div>
+                        <div><dt>Phone</dt><dd>{{ lead.customer?.phone || 'Not provided' }}</dd></div>
+                      </dl>
+                    </section>
+                  } @else {
+                    <p class="lead-details-unavailable">Customer information unavailable.</p>
+                  }
+
+                  <section class="lead-details-section" aria-label="Lead information">
+                    <h3>Opportunity</h3>
+                    <dl>
+                      <div><dt>Service</dt><dd>{{ lead.service || 'Not provided' }}</dd></div>
+                      <div>
+                        <dt>Status</dt>
+                        <dd>
+                          <label class="lead-details-status">
+                            <span class="visually-hidden">Lead status</span>
+                            <select
+                              [value]="lead.status"
+                              [disabled]="detailsSaving()"
+                              (change)="updateDetailsStatus($event)"
+                            >
+                              @for (status of statuses; track status) {
+                                <option [value]="status">{{ formatEnumLabel(status) }}</option>
+                              }
+                            </select>
+                          </label>
+                        </dd>
+                      </div>
+                      <div><dt>Source</dt><dd>{{ formatEnumLabel(lead.source) }}</dd></div>
+                      @if (lead.message) {
+                        <div class="lead-details-section__message"><dt>Message</dt><dd>{{ lead.message }}</dd></div>
+                      }
+                      @if (lead.createdAt) {
+                        <div><dt>Created</dt><dd>{{ lead.createdAt | date: 'd MMM y, h:mm a' }}</dd></div>
+                      }
+                      @if (lead.updatedAt) {
+                        <div><dt>Updated</dt><dd>{{ lead.updatedAt | date: 'd MMM y, h:mm a' }}</dd></div>
+                      }
+                    </dl>
+                  </section>
+
+                  @if (detailsSaving()) {
+                    <p class="lead-details-loading" role="status">Saving status…</p>
+                  }
+                  @if (detailsError(); as error) {
+                    <div class="lead-details-error" role="alert">
+                      <p>{{ error }}</p>
+                      <button type="button" [disabled]="detailsSaving()" (click)="retryDetailsStatus()">Retry</button>
+                    </div>
+                  }
+
+                  <section class="lead-details-activity" aria-label="Activity">
+                    <div class="lead-details-activity__heading">
+                      <h3>Activity</h3>
+                      <p>Activity shown here is from this browser session.</p>
+                    </div>
+                    <ol class="lead-details-activity__timeline">
+                      @for (activity of detailsActivities(); track activity.id) {
+                        <li class="lead-details-activity__item">
+                          <span
+                            class="lead-details-activity__icon"
+                            [class]="'lead-details-activity__icon lead-details-activity__icon--' + activity.icon"
+                            aria-hidden="true"
+                          >
+                            @switch (activity.icon) {
+                              @case ('created') { + }
+                              @case ('status') { ↻ }
+                              @case ('draft') { ✎ }
+                              @case ('copy') { ⧉ }
+                              @case ('whatsapp') { ↗ }
+                            }
+                          </span>
+                          <div class="lead-details-activity__content">
+                            <p>{{ activity.description }}</p>
+                            <time [attr.datetime]="activity.timestamp">
+                              {{ activity.timestamp ? (activity.timestamp | date: 'd MMM y, h:mm a') : 'Date unavailable' }}
+                            </time>
+                          </div>
+                        </li>
+                      }
+                    </ol>
+                    @if (detailsActivities().length === 1) {
+                      <p class="lead-details-activity__empty">No recent activity.</p>
+                    }
+                  </section>
+
+                  <section class="lead-details-follow-up" aria-label="Lead follow-up actions">
+                    @if (!detailsDraft()) {
+                      <button class="lead-details-primary-button" type="button" (click)="draftDetailsFollowUp()">
+                        Draft follow-up message
+                      </button>
+                    } @else {
+                      <label for="lead-details-follow-up-draft">Follow-up message</label>
+                      <textarea
+                        id="lead-details-follow-up-draft"
+                        rows="4"
+                        [value]="detailsDraft()"
+                        (input)="updateDetailsDraft($event)"
+                      ></textarea>
+                      <div class="lead-details-actions">
+                        <button class="lead-details-primary-button" type="button" (click)="copyDetailsDraft()">
+                          {{ detailsCopied() ? 'Copied' : 'Copy message' }}
+                        </button>
+                        <button
+                          class="lead-details-whatsapp-button"
+                          type="button"
+                          [disabled]="!whatsAppPhone(lead.customer?.phone)"
+                          (click)="sendDetailsViaWhatsApp(lead.customer?.phone)"
+                        >
+                          Send via WhatsApp
+                        </button>
+                        <button class="lead-details-secondary-button" type="button" (click)="clearDetailsDraft()">
+                          Clear message
+                        </button>
+                      </div>
+                      @if (!whatsAppPhone(lead.customer?.phone)) {
+                        <p class="lead-details-copy-error">No valid phone number available for this lead.</p>
+                      }
+                      @if (detailsCopyError(); as copyError) {
+                        <p class="lead-details-copy-error" role="alert">{{ copyError }}</p>
+                      }
+                    }
+                  </section>
+                </div>
+              </section>
+            </div>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (createDialogOpen()) {
+  <div class="dialog-backdrop" (click)="closeCreateDialog()">
+    <section
+      class="create-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-lead-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="create-dialog__heading">
+        <div>
+          <p class="eyebrow">NEW OPPORTUNITY</p>
+          <h2 id="create-lead-title">Add a lead</h2>
+        </div>
+        <button
+          type="button"
+          class="dialog-close"
+          aria-label="Close dialog"
+          [disabled]="saving()"
+          (click)="closeCreateDialog()"
+        >
+          ×
+        </button>
+      </div>
+      <p class="create-dialog__intro">Add a customer enquiry to your lead pipeline.</p>
+      @if (createError()) {
+        <p class="inline-error" role="alert">{{ createError() }}</p>
+      }
+      <form class="create-lead-form" (submit)="createLead($event)">
+        @if (customers().length > 0) {
+          <label>
+            <span>Customer</span>
+            <select name="customerId" required>
+              <option value="" disabled selected>Select a customer</option>
+              @for (customer of customers(); track customer.id) {
+                <option [value]="customer.id">
+                  {{ customer.name }}{{ customer.email ? ' · ' + customer.email : '' }}
+                </option>
+              }
+            </select>
+          </label>
+        } @else {
+          <label>
+            <span>Customer ID</span>
+            <input
+              name="customerId"
+              type="text"
+              required
+              placeholder="Enter an existing customer ID"
+            />
+            <small>Customer must already belong to this business.</small>
+          </label>
+        }
+        <label>
+          <span>Lead title / service</span>
+          <input
+            name="service"
+            type="text"
+            required
+            maxlength="160"
+            placeholder="e.g. Full home interiors"
+          />
+        </label>
+        <label>
+          <span>Source</span>
+          <select name="source" required>
+            @for (source of sources; track source) {
+              <option [value]="source">{{ formatEnumLabel(source) }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Details <small>Optional</small></span>
+          <textarea name="message" rows="3" placeholder="Add a note about this lead"></textarea>
+        </label>
+        <div class="create-dialog__actions">
+          <button
+            class="cancel-button"
+            type="button"
+            [disabled]="saving()"
+            (click)="closeCreateDialog()"
+          >
+            Cancel
+          </button>
+          <button class="create-lead-button" type="submit" [disabled]="saving()">
+            {{ saving() ? 'Saving…' : 'Create lead' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

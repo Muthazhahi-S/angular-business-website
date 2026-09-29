@@ -1,3 +1,9 @@
+@use './app/components/ai-assistant-page/ai-lead-follow-up';
+@use './app/components/dashboard/needs-attention';
+@use './app/components/dashboard/quick-actions';
+@use './app/components/dashboard/date-range';
+@use './app/components/leads-page/lead-details';
+
 :root {
   color-scheme: light;
   --ink: #292b25;
@@ -201,6 +207,77 @@ textarea:focus-visible {
 
 .button:active {
   transform: translateY(0);
+}
+
+.dashboard-state {
+  display: flex;
+  min-height: 8rem;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.2rem;
+  padding: 1.35rem;
+  border: 1px solid #e9edf4;
+  border-radius: 0.85rem;
+  background: #fff;
+}
+
+.dashboard-state h2 {
+  margin: 0;
+  color: #26334a;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.dashboard-state p {
+  margin: 0.25rem 0 0;
+  color: #8791a3;
+  font-size: 0.7rem;
+}
+
+.dashboard-state__spinner {
+  width: 1.45rem;
+  height: 1.45rem;
+  flex: 0 0 auto;
+  border: 2px solid #d8e9e2;
+  border-top-color: #238568;
+  border-radius: 50%;
+  animation: dashboard-spin 700ms linear infinite;
+}
+
+.dashboard-state--error {
+  border-color: #f0dedb;
+  background: #fffdfc;
+}
+
+.dashboard-state__error-icon {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #faece9;
+  color: #b35d4d;
+  font-weight: 700;
+}
+
+.retry-button {
+  min-height: 2.2rem;
+  margin-left: auto;
+  padding: 0 0.75rem;
+  border: 1px solid #d8e7e0;
+  border-radius: 0.55rem;
+  background: #fff;
+  color: #217b64;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@keyframes dashboard-spin {
+  to { transform: rotate(360deg); }
 }
 
 @media (max-width: 600px) {

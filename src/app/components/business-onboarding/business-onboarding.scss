@@ -1,0 +1,72 @@
+:host { display: block; min-height: 100vh; }
+
+.onboarding-shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 15%, rgba(84, 168, 138, 0.08), transparent 28rem),
+    #f6f8fb;
+}
+
+.onboarding-card {
+  width: min(100%, 38rem);
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  border: 1px solid #e7ebf1;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 22px 70px rgba(35, 47, 65, 0.09);
+}
+
+.onboarding-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #26334a;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.onboarding-brand strong { color: #27815e; }
+.onboarding-brand__mark { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 0.6rem; background: #176b58; color: #fff; font-family: var(--font-display); }
+.onboarding-demo { margin-left: auto; color: #929cad; font-size: 0.55rem; letter-spacing: 0.1em; }
+
+.onboarding-intro { margin-top: 2.4rem; }
+.onboarding-eyebrow { margin: 0 0 0.4rem; color: #27815e; font-size: 0.58rem; font-weight: 750; letter-spacing: 0.12em; }
+.onboarding-intro h1,
+.onboarding-success h1 { margin: 0; color: #1e2b41; font-family: var(--font-display); font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 600; letter-spacing: -0.06em; }
+.onboarding-intro > p:last-child,
+.onboarding-success > p:not(.onboarding-eyebrow) { margin: 0.45rem 0 0; color: #7d899d; font-size: 0.72rem; line-height: 1.65; }
+.onboarding-demo-note { margin: 1.15rem 0; padding: 0.7rem 0.8rem; border: 1px solid #e8eee9; border-radius: 0.55rem; background: #f7fbf8; color: #6c8378; font-size: 0.61rem; line-height: 1.6; }
+
+.onboarding-card form { display: grid; gap: 0.85rem; }
+.onboarding-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
+.onboarding-field { display: grid; min-width: 0; gap: 0.35rem; color: #46536a; font-size: 0.65rem; font-weight: 650; }
+.onboarding-field b { color: #c16d5b; }
+.onboarding-optional { color: #9aa4b3; font-size: 0.56rem; font-weight: 500; }
+.onboarding-field input { width: 100%; min-height: 2.55rem; padding: 0.55rem 0.7rem; border: 1px solid #e3e8ef; border-radius: 0.5rem; background: #fff; color: #344158; font: inherit; font-size: 0.7rem; font-weight: 400; }
+.onboarding-field input:focus { border-color: #61a58f; outline: 0; box-shadow: 0 0 0 3px rgba(35, 133, 104, 0.1); }
+.onboarding-field input[aria-invalid='true'] { border-color: #c96f60; }
+.onboarding-field small { color: #ad5347; font-size: 0.59rem; font-weight: 500; }
+
+.onboarding-submit { display: inline-flex; min-height: 2.7rem; align-items: center; justify-content: center; margin-top: 0.3rem; padding: 0.5rem 1rem; border: 1px solid #176b58; border-radius: 0.55rem; background: #176b58; color: #fff; cursor: pointer; font: inherit; font-size: 0.69rem; font-weight: 700; }
+.onboarding-submit:disabled { cursor: not-allowed; opacity: 0.55; }
+.onboarding-skip { display: block; margin: 0.8rem auto 0; padding: 0.35rem 0.6rem; border: 0; background: transparent; color: #68758a; cursor: pointer; font: inherit; font-size: 0.65rem; font-weight: 650; }
+.onboarding-skip:disabled { cursor: wait; opacity: 0.6; }
+.onboarding-session-note { margin: 0.6rem 0 0; color: #a1aab8; font-size: 0.55rem; text-align: center; }
+.onboarding-error { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin: 0 0 0.9rem; padding: 0.65rem 0.75rem; border: 1px solid #f1d8d3; border-radius: 0.5rem; background: #fff7f5; }
+.onboarding-error p { margin: 0; color: #a54f44; font-size: 0.63rem; }
+.onboarding-error button { flex: 0 0 auto; border: 0; background: transparent; color: #a54f44; cursor: pointer; font: inherit; font-size: 0.62rem; font-weight: 700; }
+.onboarding-error button:disabled { cursor: wait; opacity: 0.6; }
+
+.onboarding-success { padding: 2rem 0 0; text-align: center; }
+.onboarding-success__icon { display: grid; width: 3rem; height: 3rem; place-items: center; margin: 0 auto 1rem; border-radius: 50%; background: #eaf6ef; color: #27815e; font-size: 1.25rem; font-weight: 700; }
+.onboarding-success .onboarding-submit { width: 100%; margin-top: 1.5rem; }
+
+@media (max-width: 560px) {
+  .onboarding-shell { padding: 0.75rem; }
+  .onboarding-card { padding: 1.15rem; border-radius: 0.8rem; }
+  .onboarding-intro { margin-top: 1.75rem; }
+  .onboarding-grid { grid-template-columns: 1fr; }
+}

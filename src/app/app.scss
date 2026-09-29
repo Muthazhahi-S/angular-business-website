@@ -1,8 +1,43 @@
 :host {
   display: block;
-  overflow: clip;
+  min-height: 100vh;
 }
 
-main {
-  display: block;
+.app-shell {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 252px minmax(0, 1fr);
+}
+
+.app-main {
+  min-width: 0;
+}
+
+.main-content {
+  width: min(100%, 1500px);
+  margin-inline: auto;
+  padding: 2rem clamp(1.25rem, 3vw, 2.75rem) 3rem;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    display: block;
+  }
+
+  .main-content {
+    padding: 1.5rem 1rem 2.5rem;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    z-index: 19;
+    inset: 0;
+    display: block;
+    border: 0;
+    background: rgba(15, 23, 42, 0.48);
+  }
 }

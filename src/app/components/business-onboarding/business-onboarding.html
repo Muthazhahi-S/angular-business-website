@@ -1,0 +1,75 @@
+<main class="onboarding-shell">
+  <section class="onboarding-card" aria-labelledby="onboarding-title">
+    <header class="onboarding-brand">
+      <span class="onboarding-brand__mark" aria-hidden="true">B</span>
+      <span>BizPilot <strong>AI</strong></span>
+      <span class="onboarding-demo">DEMO SETUP</span>
+    </header>
+
+    @if (succeeded()) {
+      <div class="onboarding-success" role="status">
+        <span class="onboarding-success__icon" aria-hidden="true">✓</span>
+        <p class="onboarding-eyebrow">WORKSPACE READY</p>
+        <h1 id="onboarding-title">Your business workspace is ready.</h1>
+        <p>Your details have been saved to the existing BizPilot demo business profile.</p>
+        <button class="onboarding-submit" type="button" (click)="goToDashboard.emit()">
+          Go to Dashboard
+        </button>
+      </div>
+    } @else {
+      <div class="onboarding-intro">
+        <p class="onboarding-eyebrow">FIRST-TIME SETUP</p>
+        <h1 id="onboarding-title">Set up your business</h1>
+        <p>Tell BizPilot about your business so your workspace can use your business information.</p>
+      </div>
+
+      <p class="onboarding-demo-note">
+        This demo setup updates the existing demo business profile. It does not create a new account or tenant.
+      </p>
+
+      @if (saveError(); as message) {
+        <div class="onboarding-error" role="alert">
+          <p>{{ message }}</p>
+          <button type="button" [disabled]="saving()" (click)="submit()">Retry</button>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <label class="onboarding-field">
+          <span>Business name <b aria-hidden="true">*</b></span>
+          <input formControlName="name" autocomplete="organization" [attr.aria-invalid]="hasError('name')" [attr.aria-describedby]="hasError('name') ? 'onboarding-name-error' : null" />
+          @if (hasError('name')) { <small id="onboarding-name-error">{{ errorFor('name') }}</small> }
+        </label>
+        <label class="onboarding-field">
+          <span>Industry <b aria-hidden="true">*</b></span>
+          <input formControlName="industry" autocomplete="organization-title" [attr.aria-invalid]="hasError('industry')" [attr.aria-describedby]="hasError('industry') ? 'onboarding-industry-error' : null" />
+          @if (hasError('industry')) { <small id="onboarding-industry-error">{{ errorFor('industry') }}</small> }
+        </label>
+        <label class="onboarding-field">
+          <span>Email <b aria-hidden="true">*</b></span>
+          <input formControlName="email" type="email" autocomplete="email" [attr.aria-invalid]="hasError('email')" [attr.aria-describedby]="hasError('email') ? 'onboarding-email-error' : null" />
+          @if (hasError('email')) { <small id="onboarding-email-error">{{ errorFor('email') }}</small> }
+        </label>
+        <div class="onboarding-grid">
+          <label class="onboarding-field">
+            <span>Phone <span class="onboarding-optional">Optional</span></span>
+            <input formControlName="phone" type="tel" autocomplete="tel" [attr.aria-invalid]="hasError('phone')" [attr.aria-describedby]="hasError('phone') ? 'onboarding-phone-error' : null" />
+            @if (hasError('phone')) { <small id="onboarding-phone-error">{{ errorFor('phone') }}</small> }
+          </label>
+          <label class="onboarding-field">
+            <span>Location <span class="onboarding-optional">Optional</span></span>
+            <input formControlName="location" autocomplete="address-level2" />
+            @if (hasError('location')) { <small>{{ errorFor('location') }}</small> }
+          </label>
+        </div>
+        <button class="onboarding-submit" type="submit" [disabled]="!canSubmit">
+          {{ saving() ? 'Saving workspace…' : 'Create workspace' }}
+        </button>
+      </form>
+      <button class="onboarding-skip" type="button" [disabled]="saving()" (click)="skip.emit()">
+        Skip for now
+      </button>
+      <p class="onboarding-session-note">Setup completion is remembered for this browser session only.</p>
+    }
+  </section>
+</main>

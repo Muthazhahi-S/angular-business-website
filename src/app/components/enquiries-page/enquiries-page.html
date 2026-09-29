@@ -1,0 +1,253 @@
+<section class="page-intro">
+  <div>
+    <p class="eyebrow">CUSTOMER CONVERSATIONS</p>
+    <h2>Customer enquiries</h2>
+    <p>Every question is an opportunity to build a relationship.</p>
+  </div>
+  <button class="enquiry-create-button" type="button" (click)="openCreateDialog()">
+    <span aria-hidden="true">+</span> Add enquiry
+  </button>
+</section>
+
+<section class="workspace-card enquiries-card" aria-label="Customer enquiries">
+  <div class="workspace-card__heading enquiries-toolbar">
+    <div>
+      <h3>Enquiry inbox</h3>
+      <p>{{ filteredEnquiries().length }} enquiries shown</p>
+    </div>
+    <div class="enquiry-filters">
+      <label>
+        <span class="visually-hidden">Filter enquiries by status</span>
+        <select [value]="statusFilter()" (change)="setStatusFilter($event)">
+          <option value="">All statuses</option>
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ formatEnumLabel(status) }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span class="visually-hidden">Filter enquiries by source</span>
+        <select [value]="sourceFilter()" (change)="setSourceFilter($event)">
+          <option value="">All sources</option>
+          @for (source of sources; track source) {
+            <option [value]="source">{{ formatEnumLabel(source) }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  </div>
+
+  @if (actionError()) {
+    <p class="enquiry-inline-error" role="alert">{{ actionError() }}</p>
+  }
+  @if (conversionSuccess(); as message) {
+    <p class="enquiry-success" role="status">{{ message }}</p>
+  }
+
+  @if (loading()) {
+    <div class="enquiry-state" role="status" aria-live="polite">
+      <span class="enquiry-state__spinner" aria-hidden="true"></span>
+      <div><h3>Loading enquiries</h3><p>Fetching your customer conversations.</p></div>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="enquiry-state enquiry-state--error" role="alert">
+      <span class="enquiry-state__icon" aria-hidden="true">!</span>
+      <div><h3>We couldn’t load your enquiries</h3><p>{{ message }}</p></div>
+      <button class="enquiry-secondary-button" type="button" (click)="loadEnquiries()">Try again</button>
+    </div>
+  } @else if (filteredEnquiries().length === 0) {
+    <div class="enquiry-state enquiry-state--empty">
+      <span class="enquiry-state__icon enquiry-state__icon--empty" aria-hidden="true">↗</span>
+      <div>
+        <h3>{{ enquiries().length ? 'No matching enquiries' : 'No enquiries yet' }}</h3>
+        <p>{{ enquiries().length ? 'Try changing your search or filters.' : 'Add your first customer enquiry to get started.' }}</p>
+      </div>
+      @if (enquiries().length === 0) {
+        <button class="enquiry-secondary-button" type="button" (click)="openCreateDialog()">Add an enquiry</button>
+      }
+    </div>
+  } @else {
+    <div class="enquiries-table-scroll">
+      <table class="enquiries-table">
+        <thead>
+          <tr>
+            <th scope="col">CUSTOMER</th>
+            <th scope="col">MESSAGE</th>
+            <th scope="col">SOURCE</th>
+            <th scope="col">CREATED</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (enquiry of filteredEnquiries(); track trackEnquiry($index, enquiry)) {
+            <tr>
+              <td>
+                <span class="enquiry-customer">
+                  <span class="enquiry-avatar" aria-hidden="true">{{ enquiry.customer.name.slice(0, 1) }}</span>
+                  <span>
+                    <strong>{{ enquiry.customer.name }}</strong>
+                    <small>{{ enquiry.customer.email || enquiry.customer.phone || 'No contact details' }}</small>
+                  </span>
+                </span>
+              </td>
+              <td class="enquiry-message">{{ enquiry.message }}</td>
+              <td>{{ formatEnumLabel(enquiry.source) }}</td>
+              <td>{{ enquiry.createdAt | date:'d MMM y, h:mm a' }}</td>
+              <td>
+                <label class="enquiry-status-control">
+                  <span class="visually-hidden">Status for enquiry from {{ enquiry.customer.name }}</span>
+                  <select
+                    [class]="'enquiry-status-select enquiry-status-select--' + statusClass(enquiry.status)"
+                    [ngModel]="enquiry.status"
+                    [ngModelOptions]="{ standalone: true }"
+                    [disabled]="updatingEnquiryId() === enquiry.id"
+                    #statusControl
+                    (ngModelChange)="updateEnquiryStatus(enquiry, $event, statusControl)"
+                  >
+                    @for (status of statuses; track status) {
+                      <option [value]="status">{{ formatEnumLabel(status) }}</option>
+                    }
+                  </select>
+                </label>
+              </td>
+              <td>
+                @if (isEnquiryConverted(enquiry)) {
+                  <span class="enquiry-converted-label">Converted to lead</span>
+                } @else {
+                  <button
+                    class="enquiry-convert-button"
+                    type="button"
+                    [disabled]="conversionLoading()"
+                    (click)="openConvertDialog(enquiry)"
+                  >
+                    Convert to Lead
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (createDialogOpen()) {
+  <div class="enquiry-dialog-backdrop" (click)="closeCreateDialog()">
+    <section
+      class="enquiry-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-enquiry-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="enquiry-dialog__heading">
+        <div><p class="eyebrow">CUSTOMER CONVERSATION</p><h2 id="create-enquiry-title">Add an enquiry</h2></div>
+        <button type="button" class="enquiry-dialog__close" aria-label="Close dialog" [disabled]="saving()" (click)="closeCreateDialog()">×</button>
+      </div>
+      <p class="enquiry-dialog__intro">Record a customer message and add it to your enquiry inbox.</p>
+      @if (createError()) { <p class="enquiry-inline-error" role="alert">{{ createError() }}</p> }
+      <form class="enquiry-form" (submit)="createEnquiry($event)">
+        <label>
+          <span>Customer</span>
+          <input
+            name="customerId"
+            type="text"
+            list="enquiry-customers"
+            required
+            placeholder="Select a customer or enter their ID"
+          />
+          <datalist id="enquiry-customers">
+            @for (customer of customers(); track customer.id) {
+              <option [value]="customer.id">{{ customer.name }}{{ customer.email ? ' · ' + customer.email : '' }}</option>
+            }
+          </datalist>
+          <small>Customer must already belong to this business.</small>
+        </label>
+        <label>
+          <span>Message</span>
+          <textarea name="message" rows="4" required maxlength="2000" placeholder="What did the customer ask?"></textarea>
+        </label>
+        <label>
+          <span>Source</span>
+          <select name="source" required>
+            @for (source of sources; track source) {
+              <option [value]="source">{{ formatEnumLabel(source) }}</option>
+            }
+          </select>
+        </label>
+        <div class="enquiry-dialog__actions">
+          <button class="enquiry-cancel-button" type="button" [disabled]="saving()" (click)="closeCreateDialog()">Cancel</button>
+          <button class="enquiry-create-button" type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Create enquiry' }}</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
+
+@if (convertingEnquiry(); as enquiry) {
+  <div class="enquiry-dialog-backdrop" (click)="closeConvertDialog()">
+    <section
+      class="enquiry-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="convert-enquiry-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="enquiry-dialog__heading">
+        <div><p class="eyebrow">LEAD MANAGEMENT</p><h2 id="convert-enquiry-title">Convert to Lead</h2></div>
+        <button type="button" class="enquiry-dialog__close" aria-label="Close dialog" [disabled]="conversionLoading()" (click)="closeConvertDialog()">×</button>
+      </div>
+      <p class="enquiry-dialog__intro">Review the enquiry details and choose the new lead’s service, source, and status.</p>
+      @if (conversionError(); as message) {
+        <div class="enquiry-conversion-error" role="alert">
+          <p>{{ message }}</p>
+          <button type="button" [disabled]="conversionLoading()" (click)="convertEnquiryToLead()">Retry</button>
+        </div>
+      }
+      <div class="enquiry-conversion-details">
+        <p><strong>Customer</strong><span>{{ enquiry.customer.name }}</span></p>
+        <p><strong>Email</strong><span>{{ enquiry.customer.email || 'Not provided' }}</span></p>
+        <p><strong>Phone</strong><span>{{ enquiry.customer.phone || 'Not provided' }}</span></p>
+        <p><strong>Original enquiry</strong><span>{{ enquiry.message }}</span></p>
+      </div>
+      <form class="enquiry-form" (submit)="$event.preventDefault(); convertEnquiryToLead()">
+        <label>
+          <span>Service</span>
+          <input
+            name="service"
+            type="text"
+            required
+            maxlength="160"
+            [value]="conversionService()"
+            (input)="updateConversionService($event)"
+          />
+        </label>
+        <label>
+          <span>Lead source</span>
+          <select [value]="conversionSource()" (change)="updateConversionSource($event)">
+            @for (source of sources; track source) {
+              <option [value]="source" [selected]="source === conversionSource()">{{ formatEnumLabel(source) }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Lead status</span>
+          <select [value]="conversionStatus()" (change)="updateConversionStatus($event)">
+            @for (status of leadStatuses; track status) {
+              <option [value]="status" [selected]="status === conversionStatus()">{{ formatEnumLabel(status) }}</option>
+            }
+          </select>
+        </label>
+        <div class="enquiry-dialog__actions">
+          <button class="enquiry-cancel-button" type="button" [disabled]="conversionLoading()" (click)="closeConvertDialog()">Cancel</button>
+          <button class="enquiry-create-button" type="submit" [disabled]="conversionLoading() || !conversionService().trim()">
+            {{ conversionLoading() ? 'Converting…' : 'Create lead' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

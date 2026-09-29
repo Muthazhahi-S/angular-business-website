@@ -1,12 +1,53 @@
-<app-navbar />
-<main id="main-content" tabindex="-1">
-  <app-hero />
-  <app-services />
-  <app-packages />
-  <app-about />
-  <app-why-us />
-  <app-testimonials />
-  <app-contact />
-</main>
-<app-footer />
-<app-whatsapp-float />
+@if (showOnboarding()) {
+  <app-business-onboarding
+    (skip)="finishOnboarding()"
+    (completed)="markOnboardingCompleted()"
+    (goToDashboard)="finishOnboarding()"
+  />
+} @else {
+<div class="app-shell">
+  <app-sidebar
+    [class.sidebar-open]="mobileMenuOpen()"
+    [activePage]="activePage()"
+    [mobileMenuOpen]="mobileMenuOpen()"
+    (navigate)="navigate($event)"
+  />
+
+  @if (mobileMenuOpen()) {
+    <button
+      class="sidebar-backdrop"
+      type="button"
+      aria-label="Close navigation menu"
+      (click)="mobileMenuOpen.set(false)"
+    ></button>
+  }
+
+  <div class="app-main">
+    <app-topbar
+      [page]="activePage()"
+      [searchTerm]="searchTerm()"
+      (searchChange)="searchTerm.set($event)"
+      (menuToggle)="mobileMenuOpen.update((isOpen) => !isOpen)"
+    />
+    <main id="main-content" class="main-content" tabindex="-1">
+      @if (activePage() === 'Dashboard') {
+        <app-dashboard
+          [searchTerm]="searchTerm()"
+          (navigate)="navigate($event)"
+          (viewLead)="openLeadFromDashboard($event)"
+          (quickAction)="handleDashboardQuickAction($event)"
+        />
+      } @else {
+        <app-workspace-page
+          [page]="activePage()"
+          [searchTerm]="searchTerm()"
+          [selectedLeadId]="selectedLeadId()"
+          [createDialogRequest]="createDialogRequest()"
+          (leadSelectionHandled)="selectedLeadId.set(null)"
+          (createDialogRequestHandled)="clearCreateDialogRequest()"
+        />
+      }
+    </main>
+  </div>
+</div>
+}

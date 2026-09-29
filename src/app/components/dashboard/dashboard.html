@@ -1,0 +1,249 @@
+<section class="welcome">
+  <div>
+    <p class="welcome__date"><span class="welcome__dot"></span> {{ today | date:'EEEE, d MMMM y' | uppercase }}</p>
+    <h2>Good morning, Ananya <span aria-hidden="true">✦</span></h2>
+    <p class="welcome__subtitle">Here’s what’s happening with your business today.</p>
+  </div>
+  <div class="date-range-control">
+    <button
+      class="date-button"
+      type="button"
+      aria-label="Filter dashboard by date range"
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="dateRangeMenuOpen()"
+      (click)="toggleDateRangeMenu()"
+    >
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /></svg>
+      {{ selectedDateRangeLabel() }}
+      <svg
+        class="date-button__chevron"
+        [class.date-button__chevron--open]="dateRangeMenuOpen()"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </button>
+    @if (dateRangeMenuOpen()) {
+      <div class="date-range-menu" role="listbox" aria-label="Date range">
+        @for (option of dateRangeOptions; track option.value) {
+          <button
+            class="date-range-menu__option"
+            [class.date-range-menu__option--selected]="selectedDateRange() === option.value"
+            type="button"
+            role="option"
+            [attr.aria-selected]="selectedDateRange() === option.value"
+            (click)="selectDateRange(option.value)"
+          >
+            {{ option.label }}
+            @if (selectedDateRange() === option.value) {
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m5 12 4 4L19 6" />
+              </svg>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+@if (loading()) {
+  <section class="dashboard-state" role="status" aria-live="polite">
+    <span class="dashboard-state__spinner" aria-hidden="true"></span>
+    <div><h2>Loading your dashboard</h2><p>Fetching the latest leads and enquiries.</p></div>
+  </section>
+} @else if (errorMessage(); as message) {
+  <section class="dashboard-state dashboard-state--error" role="alert">
+    <span class="dashboard-state__error-icon" aria-hidden="true">!</span>
+    <div><h2>We couldn’t load your dashboard</h2><p>{{ message }}</p></div>
+    <button class="retry-button" type="button" (click)="loadDashboard()">Try again</button>
+  </section>
+} @else if (dashboard(); as data) {
+  <section class="stats-grid" aria-label="Business overview">
+    @for (metric of metrics(); track metric.label) {
+      <app-stat-card
+        [label]="metric.label"
+        [value]="metric.value"
+        [icon]="metric.icon"
+        [tone]="metric.tone"
+      />
+    }
+  </section>
+
+  <section class="panel quick-actions-panel" aria-labelledby="quick-actions-title">
+    <div class="panel__heading">
+      <div>
+        <h2 id="quick-actions-title">Quick Actions</h2>
+        <p>Get to your most-used tools</p>
+      </div>
+    </div>
+    <div class="quick-actions-list">
+      <button class="quick-action quick-action--primary" type="button" (click)="quickAction.emit('addLead')">
+        <span class="quick-action__icon" aria-hidden="true">＋</span>
+        <span>+ Add Lead</span>
+      </button>
+      <button class="quick-action quick-action--primary" type="button" (click)="quickAction.emit('addEnquiry')">
+        <span class="quick-action__icon" aria-hidden="true">✉</span>
+        <span>+ Add Enquiry</span>
+      </button>
+      <button class="quick-action" type="button" (click)="quickAction.emit('viewLeads')">
+        <span class="quick-action__icon" aria-hidden="true">↗</span>
+        <span>View Leads</span>
+      </button>
+      <button class="quick-action" type="button" (click)="quickAction.emit('viewEnquiries')">
+        <span class="quick-action__icon" aria-hidden="true">▤</span>
+        <span>View Enquiries</span>
+      </button>
+      <button class="quick-action" type="button" (click)="quickAction.emit('aiAssistant')">
+        <span class="quick-action__icon" aria-hidden="true">✦</span>
+        <span>AI Assistant</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="content-grid">
+    <article class="panel enquiries-panel">
+      <div class="panel__heading">
+        <div>
+          <h2>Recent enquiries</h2>
+          <p>Your latest customer conversations</p>
+        </div>
+        <button class="text-action" type="button" (click)="showAllEnquiries()">View all <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">CUSTOMER</th>
+              <th scope="col">MESSAGE</th>
+              <th scope="col">SOURCE</th>
+              <th scope="col">DATE</th>
+              <th scope="col">STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (enquiry of filteredEnquiries(); track enquiry.id) {
+              <tr>
+                <td>
+                  <span class="customer">
+                    <span class="customer__avatar" aria-hidden="true">{{ enquiry.customer.name.slice(0, 1) }}</span>
+                    <span class="customer__name">{{ enquiry.customer.name }}</span>
+                  </span>
+                </td>
+                <td class="message-cell">{{ enquiry.message }}</td>
+                <td><span class="source"><span class="source__dot" [class]="'source__dot source__dot--' + enquiry.source.toLowerCase()"></span>{{ formatSource(enquiry.source) }}</span></td>
+                <td class="date-cell">{{ formatEnquiryDate(enquiry.createdAt) }}</td>
+                <td><span class="status" [class]="'status status--' + statusClass(enquiry.status)">{{ formatStatus(enquiry.status) }}</span></td>
+              </tr>
+            } @empty {
+              <tr><td class="empty-row" colspan="5">No enquiries match your search.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="panel activity-panel">
+      <div class="panel__heading">
+        <div>
+          <h2>Recent activity</h2>
+          <p>What’s happening across your team</p>
+        </div>
+        <button class="more-button" type="button" aria-label="More activity options">···</button>
+      </div>
+      <ol class="activity-list">
+        @for (activity of activities; track activity.text) {
+          <li class="activity">
+            <span class="activity__avatar" [class]="'activity__avatar activity__avatar--' + activity.color" aria-hidden="true">{{ activity.initials }}</span>
+            <div class="activity__copy">
+              <p>{{ activity.text }}</p>
+              <span>{{ activity.time }}</span>
+            </div>
+          </li>
+        }
+      </ol>
+      <div class="activity-summary">
+        <span class="activity-summary__icon" aria-hidden="true">↗</span>
+        <span><strong>18 activities</strong><br />recorded this week</span>
+        <span class="activity-summary__arrow" aria-hidden="true">→</span>
+      </div>
+    </article>
+  </section>
+}
+
+<section class="panel needs-attention-panel" aria-labelledby="needs-attention-title">
+  <div class="panel__heading">
+    <div>
+      <h2 id="needs-attention-title">Needs Attention</h2>
+      <p>Keep these opportunities moving forward</p>
+    </div>
+  </div>
+
+  @if (attentionLoading()) {
+    <div class="attention-state" role="status" aria-live="polite">
+      <span class="dashboard-state__spinner" aria-hidden="true"></span>
+      <p>Loading leads that need attention…</p>
+    </div>
+  } @else if (attentionError(); as message) {
+    <div class="attention-state attention-state--error" role="alert">
+      <p>{{ message }}</p>
+      <button class="retry-button" type="button" (click)="loadAttentionLeads()">Retry</button>
+    </div>
+  } @else if (attentionItems().length === 0) {
+    <p class="attention-empty">No leads need attention right now.</p>
+  } @else {
+    <ul class="attention-list">
+      @for (item of attentionItems(); track item.lead.id) {
+        <li class="attention-item">
+          <div class="attention-item__customer">
+            <span class="attention-item__avatar" aria-hidden="true">
+              {{ item.lead.customer?.name?.slice(0, 1) || '?' }}
+            </span>
+            <div class="attention-item__identity">
+              <strong>{{ item.lead.customer?.name || 'Customer information unavailable.' }}</strong>
+              <span>{{ item.lead.service }}</span>
+            </div>
+          </div>
+          <span class="attention-item__status" [class]="'attention-item__status attention-item__status--' + item.lead.status.toLowerCase()">
+            {{ formatStatus(item.lead.status) }}
+          </span>
+          <span class="attention-item__source">{{ formatSource(item.lead.source) }}</span>
+          <p class="attention-item__reason">{{ item.reason }}</p>
+          <button class="attention-item__action" type="button" (click)="openLead(item.lead)">
+            View Lead <span aria-hidden="true">→</span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+<section class="bottom-grid" [class.bottom-grid--assistant-only]="!dashboard()">
+  @if (dashboard(); as data) {
+    <article class="panel pipeline-panel">
+      <div class="panel__heading">
+        <div><h2>Lead pipeline</h2><p>A quick look at your conversion journey</p></div>
+        <span class="period-label">All leads</span>
+      </div>
+      <div class="pipeline">
+        @for (stage of pipelineStages(); track stage.status) {
+          <div class="pipeline__stage">
+            <span class="pipeline__bar" [class]="'pipeline__bar pipeline__bar--' + stage.status.toLowerCase()" [style.width.%]="pipelineWidth(stage.count)"></span>
+            <span>{{ stage.label }}</span>
+            <strong>{{ stage.count }}</strong>
+          </div>
+        }
+      </div>
+    </article>
+  }
+  <article class="assistant-card">
+    <span class="assistant-card__sparkle" aria-hidden="true">✦</span>
+    <p class="assistant-card__eyebrow">YOUR AI ASSISTANT</p>
+    <h2>More time for the work you love.</h2>
+    <p>Let your AI assistant handle first responses and keep every lead moving.</p>
+    <button type="button" (click)="navigate.emit('AI Assistant')">Meet your assistant <span aria-hidden="true">→</span></button>
+    <span class="assistant-card__orb" aria-hidden="true"></span>
+  </article>
+</section>
